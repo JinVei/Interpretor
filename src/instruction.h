@@ -1,6 +1,6 @@
 #ifndef __INSTRUCTION_H
 #define __INSTRUCTION_H
-#include "operation.h"
+#include "operator_type.h"
 #include "value.h"
 
 #include <list>
