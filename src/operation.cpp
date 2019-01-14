@@ -1,12 +1,9 @@
 #include "operation.h"
-using namespace interpretor;
+#include "machine.h"
+#include "primative_operator.h"
 
-auto empty(std::list<value> opreands) -> std::list<value> {
-    std::list<value> return_list;
-    //return_list.push_back(value(value_type::NIL, 0));
-    return return_list;
+interpretor::operation::operation(operator_type type, const char * label, operation_handle handler) {
+    this->_operator_type = type;
+    this->_instruction_label = std::string(label);
+    this->_operator_handler = handler;
 }
-
-operation oprations_table[] = {
-    operation(operation_type::EMPTY, "empty", empty )
-};

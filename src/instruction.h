@@ -6,7 +6,7 @@
 #include <list>
 namespace interpretor{
     struct instruction{
-        operation_type      operation_number;
+        operator_type       operator_type;
         std::list<value>    operands_list;
     };
 }

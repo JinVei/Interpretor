@@ -6,28 +6,24 @@
 namespace interpretor{
     enum class value_type : uint8_t {
         NIL = 0,
-        INTEGER,
-        DOUBLE,
+        NUMBER,
         STRING,
         GC_OBJECT
     };
 
     class value{
-    private:
+    public:
         value_type      m_value_type;
         
         union{
-            long        m_integer;
-            double      m_float;
+            double      m_number;
             char*       m_string;
             gc_object*  m_gc_object;
         }data;
 
     public:
-        value(value_type type, long value) {
-            m_value_type = type;
-            data.m_integer = value;
-        }
+        value(value_type type, double val);
+        value();
     };
 }
 

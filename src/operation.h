@@ -7,28 +7,17 @@
 #include <functional>
 
 namespace interpretor {
-    using operation_handle = std::function<std::list<value>(std::list<value>)>;
-    enum class operation_type : uint16_t;
+    class machine;
+    enum class operator_type : uint16_t;
+
+    using operation_handle = std::function<void(machine& machine, std::list<value>)>;
+
     struct operation {
-        operation_type      type;
-        std::string         label;
-        operation_handle    handler;
+        operator_type       _operator_type;
+        std::string         _instruction_label;
+        operation_handle    _operator_handler;
 
-        operation(operation_type type, const char* label, operation_handle handler) {
-            this->type      = type;
-            this->label     = std::string(label);
-            this->handler   = handler;
-        }
+        operation(operator_type type, const char* label, operation_handle handler);
     };
-
-    enum class operation_type : uint16_t {
-        EMPTY = 0,
-        ADDITION,
-        SUBTRACTION,
-        DIVISION,
-        MULTIPLICATION,
-    };
-
-    extern operation opration_table[];
 }
 #endif
