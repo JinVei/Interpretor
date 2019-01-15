@@ -27,7 +27,7 @@ namespace interpretor{
         void increase_pc();
         void print(char* message);
         void set_run_error();
-        void set_ret_register(value val);
+        void set_returned_value(value val);
     };
 }
 #endif

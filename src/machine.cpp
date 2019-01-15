@@ -13,6 +13,6 @@ void interpretor::machine::set_run_error() {//need modify
     m_error_flag = 1;
 }
 
-void interpretor::machine::set_ret_register(value val) {
+void interpretor::machine::set_returned_value(value val) {
     m_register_ret = val;
 }

@@ -15,7 +15,7 @@ namespace interpretor {
     };
 
     enum class gc_object_type : gc_object_type_size {//using std::arrry
-        cons = 1,
+        table = 0,
     };
 
     extern gc_object_type_item gc_object_type_table[];

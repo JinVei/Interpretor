@@ -1,6 +1,4 @@
 #include "operator_type.h"
-#include "operation.h"
-#include "machine.h"
 #include "primative_operator.h"
 
 namespace interpretor {
