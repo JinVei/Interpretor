@@ -15,6 +15,7 @@ namespace interpretor {
         operator_type       _operator_type;
         const char*         _instruction_label;
         operator_handle     _operator_handler;
+        const char*         _decription;
     };
 
     enum class operator_type : operator_type_size {
@@ -23,7 +24,10 @@ namespace interpretor {
         SUBTRACTION,
         MULTIPLICATION,
         DIVISION,
-        GOTO,
+        TABLE,
+        TABLE_GET,
+        TABLE_PUT,
+        //GOTO,
     };
 
     extern operator_item operator_table[];

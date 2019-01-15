@@ -9,6 +9,6 @@ namespace interpretor {
         return nullptr;
     }
     gc_object_type_item gc_object_type_table[] = {
-        { gc_object_type::table, "table", table::create_table },
+        { gc_object_type::TABLE, "table", table::create_table },
     };
 }

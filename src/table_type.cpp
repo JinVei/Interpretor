@@ -23,7 +23,7 @@ namespace interpretor {
             return (*it_value).second;
         }
         else {
-            return value(value_type::NIL, 0);
+            return value();
         }
     }
     void table::put_value(const char * name, value val) {

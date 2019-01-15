@@ -10,7 +10,6 @@ namespace interpretor{
         STRING,
         GC_OBJECT
     };
-
     class value{
     public:
         value_type      m_value_type;
@@ -22,8 +21,10 @@ namespace interpretor{
         }data;
 
     public:
-        value(value_type type, double val);
         value();
+        value(value_type type, double val);
+        value(value_type type, char* val);
+        value(value_type type, gc_object* val);
     };
 }
 
