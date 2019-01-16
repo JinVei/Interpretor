@@ -19,6 +19,9 @@ namespace interpretor {
         { operator_type::DIVISION,
           operator_item{ operator_type::DIVISION,          "div",          primative_operator::division }
         },
+        { operator_type::JUMP,
+          operator_item{ operator_type::JUMP,              "jmp",          primative_operator::jump }
+        },
         { operator_type::TABLE,
           operator_item{ operator_type::TABLE,             "table",        primative_operator::new_table, 
                         "create table" }

@@ -9,6 +9,7 @@ namespace interpretor{
         static void subtraction(machine& machine, std::list<value> operands);
         static void multiplication(machine& machine, std::list<value> operands);
         static void division(machine& machine, std::list<value> operands);
+        static void jump(machine& machine, std::list<value> operands);
         static void new_table(machine& machine, std::list<value> operands);
         static void table_get(machine& machine, std::list<value> operands);
         static void table_put(machine& machine, std::list<value> operands);

@@ -5,9 +5,20 @@
 
 #include <list>
 namespace interpretor{
+    enum class operand_type : uint8_t {
+        immediate_operand = 0,
+        stack_operand,
+//        register_operand,
+    };
+
+    struct operand {
+        operand_type _operand_type;
+        value        _val;
+    };
+
     struct instruction{
-        operator_type       operator_type;
-        std::list<value>    operands_list;
+        operator_type         _operator_type;
+        std::list<operand>    _operands_list;
     };
 }
 #endif

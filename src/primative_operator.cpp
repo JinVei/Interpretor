@@ -131,6 +131,30 @@ namespace interpretor {
         machine.set_run_error();
     }
 
+    void primative_operator::jump(machine & machine, std::list<value> operands) {
+        value operand1;
+        double number;
+
+        if (operands.size() < 2) {
+            machine.print("the number of operands must not less than 1");
+            goto Error1;
+        }
+
+        operand1 = operands.front();
+        operands.pop_front();
+
+        if (operand1.m_value_type != value_type::NUMBER) {
+            machine.print("operands type must be value_type::NUMBER");
+            goto Error1;
+        }
+        machine.set_pc(operand1);
+        return;
+
+    Error1:
+        machine.set_returned_value(value());
+        machine.set_run_error();
+    }
+
     void primative_operator::new_table(machine & machine, std::list<value> operands) {
         value val = g_garbage_collector.create_gc_object(gc_object_type::TABLE);
         table* table_val = dynamic_cast<table*>(val.data.m_gc_object);

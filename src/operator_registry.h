@@ -25,6 +25,7 @@ namespace interpretor {
         SUBTRACTION,
         MULTIPLICATION,
         DIVISION,
+        JUMP,
         TABLE,
         TABLE_GET,
         TABLE_PUT,
