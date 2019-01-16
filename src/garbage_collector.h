@@ -1,6 +1,6 @@
 #ifndef __GARBAGE_COLLECTOR_H
 #define __GARBAGE_COLLECTOR_H
-#include "gc_object_type.h"
+#include "gc_object_type_registry.h"
 #include "gc_object.h"
 #include "value.h"
 

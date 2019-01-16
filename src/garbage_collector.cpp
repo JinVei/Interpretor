@@ -5,8 +5,7 @@ namespace interpretor {
     garbage_collector g_garbage_collector;
 
     value garbage_collector::create_gc_object(gc_object_type enum_type){
-        gc_object_type_size type = static_cast<gc_object_type_size>(enum_type);
-        gc_object* object = gc_object_type_table[type]._creator();
+        gc_object* object = gc_object_type_registry[enum_type]._creator();
         if (object == nullptr) {
             return value();
         } else {

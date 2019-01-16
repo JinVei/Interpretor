@@ -14,7 +14,7 @@ namespace interpretor {
 
         if (operands.size() < 2) {
             machine.print("the number of operands must not less than 2");
-            goto Exit1;
+            goto Error1;
         }
 
         operand1 = operands.front();
@@ -25,17 +25,16 @@ namespace interpretor {
         if (operand1.m_value_type != value_type::NUMBER
             || operand2.m_value_type != value_type::NUMBER) {
             machine.print("operands type must be value_type::NUMBER");
-            goto Exit1;
+            goto Error1;
         }
 
         number = operand1.data.m_number + operand2.data.m_number;
         machine.set_returned_value(value(value_type::NUMBER, number));
         machine.increase_pc();
         return;
-    Exit1:
+    Error1:
         machine.set_returned_value(value());
         machine.set_run_error();
-        //machine.increase_pc();
     }
 
     void primative_operator::subtraction(machine & machine, std::list<value> operands) {
@@ -45,7 +44,7 @@ namespace interpretor {
 
         if (operands.size() < 2) {
             machine.print("the number of operands must not less than 2");
-            goto Exit1;
+            goto Error1;
         }
 
         operand1 = operands.front();
@@ -56,14 +55,14 @@ namespace interpretor {
         if (operand1.m_value_type != value_type::NUMBER
             || operand2.m_value_type != value_type::NUMBER) {
             machine.print("operands type must be value_type::NUMBER");
-            goto Exit1;
+            goto Error1;
         }
 
         number = operand1.data.m_number - operand2.data.m_number;
         machine.set_returned_value(value(value_type::NUMBER, number));
         machine.increase_pc();
         return;
-    Exit1:
+    Error1:
         machine.set_returned_value(value());
         machine.set_run_error();
     }
@@ -75,7 +74,7 @@ namespace interpretor {
 
         if (operands.size() < 2) {
             machine.print("the number of operands must not less than 2");
-            goto Exit1;
+            goto Error1;
         }
 
         operand1 = operands.front();
@@ -86,14 +85,14 @@ namespace interpretor {
         if (operand1.m_value_type != value_type::NUMBER
             || operand2.m_value_type != value_type::NUMBER) {
             machine.print("operands type must be value_type::NUMBER");
-            goto Exit1;
+            goto Error1;
         }
 
         number = operand1.data.m_number * operand2.data.m_number;
         machine.set_returned_value(value(value_type::NUMBER, number));
         machine.increase_pc();
         return;
-    Exit1:
+    Error1:
         machine.set_returned_value(value());
         machine.set_run_error();
     }
@@ -105,7 +104,7 @@ namespace interpretor {
 
         if (operands.size() < 2) {
             machine.print("the number of operands must not less than 2");
-            goto Exit1;
+            goto Error1;
         }
 
         operand1 = operands.front();
@@ -116,18 +115,18 @@ namespace interpretor {
         if (operand1.m_value_type != value_type::NUMBER
             || operand2.m_value_type != value_type::NUMBER) {
             machine.print("operands type must be value_type::NUMBER");
-            goto Exit1;
+            goto Error1;
         }
         if (fabs(operand2.data.m_number) < std::numeric_limits<double>::epsilon()) {
             machine.print("divisor type must cannot be zero");
-            goto Exit1;
+            goto Error1;
         }
 
         number = operand1.data.m_number / operand2.data.m_number;
         machine.set_returned_value(value(value_type::NUMBER, number));
         machine.increase_pc();
         return;
-    Exit1:
+    Error1:
         machine.set_returned_value(value());
         machine.set_run_error();
     }
@@ -139,13 +138,13 @@ namespace interpretor {
 
         if (table_val == nullptr) {
             machine.print("table_val == nullptr");
-            goto Exit1;
+            goto Error1;
         }
         while (2 <= operands.size()) {
             key_name = operands.front();
             if (key_name.m_value_type != value_type::STRING) {
                 machine.print("name must be string type");
-                goto Exit1;
+                goto Error1;
             }
             operands.pop_front();
 
@@ -157,7 +156,7 @@ namespace interpretor {
         machine.set_returned_value(value(value_type::GC_OBJECT, table_val));
         machine.increase_pc();;
         return;
-    Exit1:
+    Error1:
         machine.set_returned_value(value());
         machine.set_run_error();
     }
@@ -170,7 +169,7 @@ namespace interpretor {
 
         if (operands.size() < 2) {
             machine.print("operands.size() < 2");
-            goto Exit1;
+            goto Error1;
         }
 
         table_val = operands.front();
@@ -179,17 +178,17 @@ namespace interpretor {
 
         if (table_val.m_value_type != value_type::GC_OBJECT) {
             machine.print("table_val.m_value_type != value_type::GC_OBJECT");
-            goto Exit1;
+            goto Error1;
         }
         if (key_name.m_value_type != value_type::STRING) {
             machine.print("key_name.m_value_type != value_type::STRING");
-            goto Exit1;
+            goto Error1;
         }
 
         table1 = dynamic_cast<table*>(table_val.data.m_gc_object);
         if (table1 == nullptr) {
             machine.print("dynamic_cast<table*>(table_val.data.m_gc_object) == nullptr");
-            goto Exit1;
+            goto Error1;
         }
         ret_val = table1->get_value(key_name.data.m_string);
 
@@ -197,7 +196,7 @@ namespace interpretor {
         machine.increase_pc();
         return;
 
-    Exit1:
+    Error1:
         machine.set_returned_value(value());
         machine.set_run_error();
     }
@@ -210,7 +209,7 @@ namespace interpretor {
 
         if (operands.size() < 3) {
             machine.print("operands.size() < 3");
-            goto Exit1;
+            goto Error1;
         }
 
         table_val = operands.front();
@@ -221,24 +220,24 @@ namespace interpretor {
 
         if (table_val.m_value_type != value_type::GC_OBJECT) {
             machine.print("table_val.m_value_type != value_type::GC_OBJECT");
-            goto Exit1;
+            goto Error1;
         }
         if (key_name.m_value_type != value_type::STRING) {
             machine.print("key_name.m_value_type != value_type::STRING");
-            goto Exit1;
+            goto Error1;
         }
 
         table1 = dynamic_cast<table*>(table_val.data.m_gc_object);
         if (table1 == nullptr) {
             machine.print("dynamic_cast<table*>(table_val.data.m_gc_object) == nullptr");
-            goto Exit1;
+            goto Error1;
         }
         table1->put_value(key_name.data.m_string, put_val);
 
         machine.set_returned_value(value());
         machine.increase_pc();
         return;
-    Exit1:
+    Error1:
         machine.set_returned_value(value());
         machine.set_run_error();
     }

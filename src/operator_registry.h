@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <functional>
 #include <list>
+#include <unordered_map>
 
 namespace interpretor {
     class value;
@@ -30,6 +31,6 @@ namespace interpretor {
         //GOTO,
     };
 
-    extern operator_item operator_table[];
+    extern std::unordered_map<operator_type, operator_item> operator_registry;
 }
 #endif

@@ -1,6 +1,6 @@
 #ifndef __GC_OBJECT_H
 #define __GC_OBJECT_H
-#include "gc_object_type.h"
+#include "gc_object_type_registry.h"
 
 namespace interpretor{
     class gc_object{

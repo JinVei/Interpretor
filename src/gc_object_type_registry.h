@@ -2,6 +2,8 @@
 #define __GC_OBJECT_TYPE_H
 #include <stdint.h>
 #include <functional>
+#include <unordered_map>
+
 namespace interpretor {
     class gc_object;
     using gc_object_creator = std::function<gc_object*() >;
@@ -14,11 +16,11 @@ namespace interpretor {
         gc_object_creator   _creator;
     };
 
-    enum class gc_object_type : gc_object_type_size {//using std::arrry
+    enum class gc_object_type : gc_object_type_size {
         TABLE = 0,
     };
 
-    extern gc_object_type_item gc_object_type_table[];
+    extern std::unordered_map<gc_object_type, gc_object_type_item> gc_object_type_registry;
 }
 
 #endif
