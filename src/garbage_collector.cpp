@@ -15,7 +15,7 @@ namespace interpretor {
         std::shared_ptr<gc_object> ptr_object(object);
         m_gc_object_list.push_back(ptr_object);
 
-        return value(value_type::GC_OBJECT, ptr_object.get());
+        return value(ptr_object.get());
     }
 
     void garbage_collector::garbage_recycle_mark(gc_object * root) {

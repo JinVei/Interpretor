@@ -22,9 +22,16 @@ namespace interpretor{
 
     public:
         value();
-        value(value_type type, double val);
-        value(value_type type, char* val);
-        value(value_type type, gc_object* val);
+        value(double val);
+        value(char* val);
+        value(gc_object* val);
+        value operator+(value&);
+        value operator-(value&);
+        bool operator==(value&);
+        double number();
+        char* string();
+        gc_object* gc_object();
+        value_type type();
     };
 }
 

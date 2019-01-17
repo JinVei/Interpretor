@@ -5,7 +5,7 @@
 namespace interpretor {
     std::unordered_map<operator_type, operator_item> operator_registry = {
         { operator_type::EMPTY, 
-          operator_item{ operator_type::EMPTY,             "empty",        primative_operator::empty_operator }
+          operator_item{ operator_type::EMPTY,             "empty",        primative_operator::empty_operation }
         },
         { operator_type::ADDITION,
           operator_item{ operator_type::ADDITION,          "add",          primative_operator::addtion }
@@ -21,6 +21,18 @@ namespace interpretor {
         },
         { operator_type::JUMP,
           operator_item{ operator_type::JUMP,              "jmp",          primative_operator::jump }
+        },
+        { operator_type::PUSH,
+          operator_item{ operator_type::PUSH,              "push",         primative_operator::push }
+        },
+        { operator_type::POP,
+          operator_item{ operator_type::POP,               "pop",         primative_operator::pop }
+        },
+        { operator_type::CMP,
+          operator_item{ operator_type::CMP,               "cmp",         primative_operator::compare }
+        },
+        { operator_type::BRANCH,
+          operator_item{ operator_type::BRANCH,            "cmp",         primative_operator::branch }
         },
         { operator_type::TABLE,
           operator_item{ operator_type::TABLE,             "table",        primative_operator::new_table, 

@@ -8,7 +8,7 @@
 namespace interpretor {
     class value;
     class machine;
-    using operator_handle = std::function<void(machine& machine, std::list<value>)>;
+    using operator_handle = std::function<void(machine&, std::list<value>& )>;
     using operator_type_size = uint16_t;
     enum class operator_type : operator_type_size;
 
@@ -26,6 +26,10 @@ namespace interpretor {
         MULTIPLICATION,
         DIVISION,
         JUMP,
+        PUSH,
+        POP,
+        CMP,
+        BRANCH,
         TABLE,
         TABLE_GET,
         TABLE_PUT,

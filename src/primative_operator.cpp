@@ -4,10 +4,10 @@
 
 #include <array>
 namespace interpretor {
-    void primative_operator::empty_operator(machine& machine, std::list<value> operands) {
+    void primative_operator::empty_operation(machine& machine, std::list<value>& operands) {
         machine.increase_pc();
     }
-    void primative_operator::addtion(machine& machine, std::list<value> operands) {
+    void primative_operator::addtion(machine& machine, std::list<value>& operands) {
         value operand1;
         value operand2;
         double number;
@@ -29,15 +29,15 @@ namespace interpretor {
         }
 
         number = operand1.data.m_number + operand2.data.m_number;
-        machine.set_returned_value(value(value_type::NUMBER, number));
+        machine.set_returned_reg(value(number));
         machine.increase_pc();
         return;
     Error1:
-        machine.set_returned_value(value());
+        machine.set_returned_reg(value());
         machine.set_run_error();
     }
 
-    void primative_operator::subtraction(machine & machine, std::list<value> operands) {
+    void primative_operator::subtraction(machine & machine, std::list<value>& operands) {
         value operand1;
         value operand2;
         double number;
@@ -59,15 +59,15 @@ namespace interpretor {
         }
 
         number = operand1.data.m_number - operand2.data.m_number;
-        machine.set_returned_value(value(value_type::NUMBER, number));
+        machine.set_returned_reg(value(number));
         machine.increase_pc();
         return;
     Error1:
-        machine.set_returned_value(value());
+        machine.set_returned_reg(value());
         machine.set_run_error();
     }
 
-    void primative_operator::multiplication(machine & machine, std::list<value> operands) {
+    void primative_operator::multiplication(machine & machine, std::list<value>& operands) {
         value operand1;
         value operand2;
         double number;
@@ -89,15 +89,15 @@ namespace interpretor {
         }
 
         number = operand1.data.m_number * operand2.data.m_number;
-        machine.set_returned_value(value(value_type::NUMBER, number));
+        machine.set_returned_reg(value(number));
         machine.increase_pc();
         return;
     Error1:
-        machine.set_returned_value(value());
+        machine.set_returned_reg(value());
         machine.set_run_error();
     }
 
-    void primative_operator::division(machine & machine, std::list<value> operands) {
+    void primative_operator::division(machine & machine, std::list<value>& operands) {
         value operand1;
         value operand2;
         double number;
@@ -123,19 +123,18 @@ namespace interpretor {
         }
 
         number = operand1.data.m_number / operand2.data.m_number;
-        machine.set_returned_value(value(value_type::NUMBER, number));
+        machine.set_returned_reg(value(number));
         machine.increase_pc();
         return;
     Error1:
-        machine.set_returned_value(value());
+        machine.set_returned_reg(value());
         machine.set_run_error();
     }
 
-    void primative_operator::jump(machine & machine, std::list<value> operands) {
+    void primative_operator::jump(machine & machine, std::list<value>& operands) {
         value operand1;
-        double number;
 
-        if (operands.size() < 2) {
+        if (operands.size() < 1) {
             machine.print("the number of operands must not less than 1");
             goto Error1;
         }
@@ -147,15 +146,87 @@ namespace interpretor {
             machine.print("operands type must be value_type::NUMBER");
             goto Error1;
         }
-        machine.set_pc(operand1);
-        return;
 
+        machine.set_pc((unsigned int)operand1.number());
+        return;
     Error1:
-        machine.set_returned_value(value());
         machine.set_run_error();
     }
 
-    void primative_operator::new_table(machine & machine, std::list<value> operands) {
+    void primative_operator::push(machine & machine, std::list<value>& operands) {
+        value operand1;
+
+        if (operands.size() < 1) {
+            machine.print("the number of operands must not less than 1");
+            goto Error1;
+        }
+        operand1 = operands.front();
+        operands.pop_front();
+
+        machine.stack_push(operand1);
+
+        machine.increase_pc();
+        return;
+    Error1:
+        machine.set_run_error();
+    }
+
+    void primative_operator::pop(machine & machine, std::list<value>& operands) {
+        value ret_val = machine.stack_pop();
+        machine.set_returned_reg(ret_val);
+        machine.increase_pc();
+    }
+
+    void primative_operator::compare(machine & machine, std::list<value>& operands) {
+        value operand1;
+        value operand2;
+
+        if (operands.size() < 2) {
+            machine.print("the number of operands must not less than 2");
+            goto Error1;
+        }
+        operand1 = operands.front();
+        operands.pop_back();
+        operand2 = operands.front();
+        if (operand1 == operand2) {
+            machine.set_flag_reg(1);
+        } else {
+            machine.set_flag_reg(0);
+        }
+
+        machine.increase_pc();
+        return;
+    Error1:
+        machine.set_run_error();
+    }
+
+    void primative_operator::branch(machine & machine, std::list<value>& operands) {
+        value operand1;
+        value operand2;
+
+        if (operands.size() < 1) {
+            machine.print("the number of operands must not less than 1");
+            goto Error1;
+        }
+
+        operand1 = operands.front();
+        if (operand1.type() != value_type::NUMBER) {
+            machine.print("operand1.type != value_type::NUMBER");
+            goto Error1;
+        }
+
+        if (machine.get_flag_reg() == 1) {
+            machine.set_pc((unsigned int)operand1.number());
+        } else {
+            machine.increase_pc();
+        }
+
+        return;
+    Error1:
+        machine.set_run_error();
+    }
+
+    void primative_operator::new_table(machine & machine, std::list<value>& operands) {
         value val = g_garbage_collector.create_gc_object(gc_object_type::TABLE);
         table* table_val = dynamic_cast<table*>(val.data.m_gc_object);
         value key_name;
@@ -177,15 +248,15 @@ namespace interpretor {
 
             table_val->put_value(key_name.data.m_string, val);
         }
-        machine.set_returned_value(value(value_type::GC_OBJECT, table_val));
+        machine.set_returned_reg(value(table_val));
         machine.increase_pc();;
         return;
     Error1:
-        machine.set_returned_value(value());
+        machine.set_returned_reg(value());
         machine.set_run_error();
     }
 
-    void primative_operator::table_get(machine & machine, std::list<value> operands){
+    void primative_operator::table_get(machine & machine, std::list<value>& operands){
         value table_val;
         value key_name;
         value ret_val;
@@ -216,16 +287,16 @@ namespace interpretor {
         }
         ret_val = table1->get_value(key_name.data.m_string);
 
-        machine.set_returned_value(ret_val);
+        machine.set_returned_reg(ret_val);
         machine.increase_pc();
         return;
 
     Error1:
-        machine.set_returned_value(value());
+        machine.set_returned_reg(value());
         machine.set_run_error();
     }
 
-    void primative_operator::table_put(machine & machine, std::list<value> operands) {
+    void primative_operator::table_put(machine & machine, std::list<value>& operands) {
         value table_val;
         value key_name;
         value put_val;
@@ -258,11 +329,11 @@ namespace interpretor {
         }
         table1->put_value(key_name.data.m_string, put_val);
 
-        machine.set_returned_value(value());
+        machine.set_returned_reg(value());
         machine.increase_pc();
         return;
     Error1:
-        machine.set_returned_value(value());
+        machine.set_returned_reg(value());
         machine.set_run_error();
     }
 }

@@ -3,17 +3,16 @@
 
 namespace interpretor {
     void machine::init_register() {
-        //value register_pc = value(value_type::NUMBER, 0.0);
-        //stack_push(register_pc);
-        //m_register_pc_index = stack_top();
+        m_register_pc = 0;
+        m_register_flag = 0;
 
         value register_ret = value();
         stack_push(register_ret);
-        m_register_ret_index = stack_top();
+        m_register_ret_index = stack_length();
 
         value stack_guard = value();
         stack_push(stack_guard);
-        m_register_stack_frame_button_index = stack_top();
+        m_register_stack_frame_button_index = stack_length();
     }
 
     machine::machine() {
@@ -27,18 +26,13 @@ namespace interpretor {
 
     void machine::run() {
         m_run_flag = 1;
-        unsigned int pc = 0;
         while (m_run_flag) {
-            if (m_register_pc.m_value_type != value_type::NUMBER) {
-                print("if (m_register_pc.m_value_type != value_type::NUMBER)");
+            m_register_pc;
+            if (m_register_pc < 0 || m_register_pc >= m_repertoire.size()) {
+                print("m_register_pc < 0 || m_register_pc >= m_repertoire.size()");
                 set_run_error();
             }
-            pc = (unsigned int)m_register_pc.data.m_number;
-            if (pc < 0 || pc >= m_repertoire.size()) {
-                print("if (m_register_pc.m_value_type != value_type::NUMBER)");
-                set_run_error();
-            }
-            execute_instruction(m_repertoire[pc]);
+            execute_instruction(m_repertoire[m_register_pc]);
         }
     }
     void machine::execute_instruction(instruction instruction) {
@@ -64,10 +58,11 @@ namespace interpretor {
     }
 
     void machine::increase_pc() {
-        ++(m_register_pc.data.m_number);
+        ++m_register_pc;
     }
 
-    void machine::set_pc(value new_pc) {
+    void machine::set_pc(unsigned int new_pc) {
+
         m_register_pc = new_pc;
     }
 
@@ -84,9 +79,21 @@ namespace interpretor {
         return;
     }
 
-    void machine::set_returned_value(value val) {
+    void machine::set_returned_reg(value val) {
         value& rer_val = stack_index(m_register_ret_index);
         rer_val = val;
+    }
+
+    void machine::set_flag_reg(unsigned int flag) {
+        m_register_flag = flag;
+    }
+
+    value machine::get_returned_reg() {
+        return stack_index(m_register_ret_index);
+    }
+
+    unsigned int machine::get_flag_reg() {
+        return m_register_flag;
     }
 
     void machine::stack_push(value val) {
@@ -100,7 +107,7 @@ namespace interpretor {
     }
 
     value machine::stack_top() {
-        return value(value_type::NUMBER, m_stack.size() - 1);
+        return value(m_stack.size() - 1);
     }
 
     value& machine::stack_index(value index) {
@@ -113,5 +120,8 @@ namespace interpretor {
             return m_nil_val;
         }
         return m_stack[(unsigned int)index.data.m_number];
+    }
+    unsigned int machine::stack_length() {
+        return m_stack.size() - 1;
     }
 }
