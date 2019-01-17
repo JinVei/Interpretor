@@ -38,17 +38,31 @@ namespace interpretor {
     void machine::execute_instruction(instruction instruction) {
         std::list<value> operator_param;
         operand operand_val;
-        value   tmp_val;
         while (instruction._operands_list.size() > 0) {
             operand_val = instruction._operands_list.front();
+            value stack_val;
 
             switch (operand_val._operand_type) {
               case operand_type::immediate_operand :
                   operator_param.push_back(operand_val._val);
                   break;
               case operand_type::stack_operand :
-                  tmp_val = stack_index(operand_val._val);
-                  operator_param.push_back(tmp_val);
+                  stack_val = stack_index(operand_val._val);
+                  operator_param.push_back(stack_val);
+                  break;
+              case operand_type::register_operand:
+                  if(operand_val._val == value(0.0))
+                      operator_param.push_back(value(m_register_pc));
+                  else if(operand_val._val == value(1))
+                      operator_param.push_back(stack_index(m_register_ret_index));
+                  else {
+                      operator_param.push_back(value());
+                      print("operand_type::register_operand is unrecognizable");
+                      set_run_error();
+                  }
+                  break;
+              default:
+                  print("not case to operand_val._operand_type");
                   break;
             }
 

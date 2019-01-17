@@ -202,7 +202,6 @@ namespace interpretor {
 
     void primative_operator::branch(machine & machine, std::list<value>& operands) {
         value operand1;
-        value operand2;
 
         if (operands.size() < 1) {
             machine.print("the number of operands must not less than 1");
@@ -221,6 +220,28 @@ namespace interpretor {
             machine.increase_pc();
         }
 
+        return;
+    Error1:
+        machine.set_run_error();
+    }
+
+    void primative_operator::move(machine & machine, std::list<value>& operands) {
+        value operand1;
+        value operand2;
+        if (operands.size() < 2) {
+            machine.print("the number of operands must not less than 2");
+            goto Error1;
+        }
+        operand1 = operands.front();
+        operands.pop_back();
+        operand2 = operands.front();
+        if ((operand1.type() != value_type::NUMBER) || (operand2.type() != value_type::NUMBER)) {
+            machine.print("if ((operand1.type() != value_type::NUMBER) || (operand2.type() != value_type::NUMBER))");
+            goto Error1;
+        }
+        machine.stack_index(operand1) = machine.stack_index(operand2);//T
+
+        machine.increase_pc();;
         return;
     Error1:
         machine.set_run_error();

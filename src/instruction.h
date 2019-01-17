@@ -8,7 +8,7 @@ namespace interpretor{
     enum class operand_type : uint8_t {
         immediate_operand = 0,
         stack_operand,
-//        register_operand,
+        register_operand,//0->pc_reg, 1->ret_reg
     };
 
     struct operand {

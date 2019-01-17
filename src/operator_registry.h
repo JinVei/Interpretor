@@ -30,6 +30,7 @@ namespace interpretor {
         POP,
         CMP,
         BRANCH,
+        MOV,
         TABLE,
         TABLE_GET,
         TABLE_PUT,

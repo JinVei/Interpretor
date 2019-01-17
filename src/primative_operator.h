@@ -14,6 +14,7 @@ namespace interpretor{
         static void pop(machine& machine, std::list<value>& operands);
         static void compare(machine& machine, std::list<value>& operands);
         static void branch(machine& machine, std::list<value>& operands);
+        static void move(machine& machine, std::list<value>& operands);
         static void new_table(machine& machine, std::list<value>& operands);
         static void table_get(machine& machine, std::list<value>& operands);
         static void table_put(machine& machine, std::list<value>& operands);
