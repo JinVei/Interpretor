@@ -18,7 +18,7 @@ namespace interpretor {
     }
 
     value table::get_value(const char * name) {
-        auto& it_value = m_table.find(name);
+        auto& it_value = m_table.find(std::string(name));
         if (it_value != m_table.end()) {
             return (*it_value).second;
         }
@@ -27,6 +27,6 @@ namespace interpretor {
         }
     }
     void table::put_value(const char * name, value val) {
-            m_table[name] = val;
+            m_table[std::string(name)] = val;
         }
 }

@@ -13,7 +13,7 @@ namespace interpretor {
         double number;
 
         if (operands.size() < 2) {
-            machine.print("the number of operands must not less than 2");
+            MACHINE_PRINT_LOG(machine, "\n""the number of operands must not less than 2");
             goto Error1;
         }
 
@@ -24,7 +24,7 @@ namespace interpretor {
 
         if (operand1.m_value_type != value_type::NUMBER
             || operand2.m_value_type != value_type::NUMBER) {
-            machine.print("operands type must be value_type::NUMBER");
+            MACHINE_PRINT_LOG(machine, "\n""operands type must be value_type::NUMBER");
             goto Error1;
         }
 
@@ -43,7 +43,7 @@ namespace interpretor {
         double number;
 
         if (operands.size() < 2) {
-            machine.print("the number of operands must not less than 2");
+            MACHINE_PRINT_LOG(machine, "\n""the number of operands must not less than 2");
             goto Error1;
         }
 
@@ -54,7 +54,7 @@ namespace interpretor {
 
         if (operand1.m_value_type != value_type::NUMBER
             || operand2.m_value_type != value_type::NUMBER) {
-            machine.print("operands type must be value_type::NUMBER");
+            MACHINE_PRINT_LOG(machine, "\n""operands type must be value_type::NUMBER");
             goto Error1;
         }
 
@@ -73,7 +73,7 @@ namespace interpretor {
         double number;
 
         if (operands.size() < 2) {
-            machine.print("the number of operands must not less than 2");
+            MACHINE_PRINT_LOG(machine, "\n""the number of operands must not less than 2");
             goto Error1;
         }
 
@@ -84,7 +84,7 @@ namespace interpretor {
 
         if (operand1.m_value_type != value_type::NUMBER
             || operand2.m_value_type != value_type::NUMBER) {
-            machine.print("operands type must be value_type::NUMBER");
+            MACHINE_PRINT_LOG(machine, "\n""operands type must be value_type::NUMBER");
             goto Error1;
         }
 
@@ -103,7 +103,7 @@ namespace interpretor {
         double number;
 
         if (operands.size() < 2) {
-            machine.print("the number of operands must not less than 2");
+            MACHINE_PRINT_LOG(machine, "\n""the number of operands must not less than 2");
             goto Error1;
         }
 
@@ -114,11 +114,11 @@ namespace interpretor {
 
         if (operand1.m_value_type != value_type::NUMBER
             || operand2.m_value_type != value_type::NUMBER) {
-            machine.print("operands type must be value_type::NUMBER");
+            MACHINE_PRINT_LOG(machine, "\n""operands type must be value_type::NUMBER");
             goto Error1;
         }
         if (fabs(operand2.data.m_number) < std::numeric_limits<double>::epsilon()) {
-            machine.print("divisor type must cannot be zero");
+            MACHINE_PRINT_LOG(machine, "\n""divisor type must cannot be zero");
             goto Error1;
         }
 
@@ -135,7 +135,7 @@ namespace interpretor {
         value operand1;
 
         if (operands.size() < 1) {
-            machine.print("the number of operands must not less than 1");
+            MACHINE_PRINT_LOG(machine, "\n""the number of operands must not less than 1");
             goto Error1;
         }
 
@@ -143,7 +143,7 @@ namespace interpretor {
         operands.pop_front();
 
         if (operand1.m_value_type != value_type::NUMBER) {
-            machine.print("operands type must be value_type::NUMBER");
+            MACHINE_PRINT_LOG(machine, "\n""operands type must be value_type::NUMBER");
             goto Error1;
         }
 
@@ -157,7 +157,7 @@ namespace interpretor {
         value operand1;
 
         if (operands.size() < 1) {
-            machine.print("the number of operands must not less than 1");
+            MACHINE_PRINT_LOG(machine, "\n""the number of operands must not less than 1");
             goto Error1;
         }
         operand1 = operands.front();
@@ -182,11 +182,11 @@ namespace interpretor {
         value operand2;
 
         if (operands.size() < 2) {
-            machine.print("the number of operands must not less than 2");
+            MACHINE_PRINT_LOG(machine, "\n""the number of operands must not less than 2");
             goto Error1;
         }
         operand1 = operands.front();
-        operands.pop_back();
+        operands.pop_front();
         operand2 = operands.front();
         if (operand1 == operand2) {
             machine.set_flag_reg(1);
@@ -204,22 +204,22 @@ namespace interpretor {
         value operand1;
 
         if (operands.size() < 1) {
-            machine.print("the number of operands must not less than 1");
+            MACHINE_PRINT_LOG(machine, "\n""the number of operands must not less than 1");
             goto Error1;
+        }
+        if (machine.get_flag_reg() != 1) {
+            machine.increase_pc();
+            goto Exit1;
         }
 
         operand1 = operands.front();
         if (operand1.type() != value_type::NUMBER) {
-            machine.print("operand1.type != value_type::NUMBER");
+            MACHINE_PRINT_LOG(machine, "\n""operand1.type != value_type::NUMBER");
             goto Error1;
         }
+        machine.set_pc((unsigned int)operand1.number());
 
-        if (machine.get_flag_reg() == 1) {
-            machine.set_pc((unsigned int)operand1.number());
-        } else {
-            machine.increase_pc();
-        }
-
+    Exit1:
         return;
     Error1:
         machine.set_run_error();
@@ -229,14 +229,14 @@ namespace interpretor {
         value operand1;
         value operand2;
         if (operands.size() < 2) {
-            machine.print("the number of operands must not less than 2");
+            MACHINE_PRINT_LOG(machine, "\n""the number of operands must not less than 2");
             goto Error1;
         }
         operand1 = operands.front();
-        operands.pop_back();
+        operands.pop_front();
         operand2 = operands.front();
         if ((operand1.type() != value_type::NUMBER) || (operand2.type() != value_type::NUMBER)) {
-            machine.print("if ((operand1.type() != value_type::NUMBER) || (operand2.type() != value_type::NUMBER))");
+            MACHINE_PRINT_LOG(machine, "\n""if ((operand1.type() != value_type::NUMBER) || (operand2.type() != value_type::NUMBER))");
             goto Error1;
         }
         machine.stack_index(operand1) = machine.stack_index(operand2);//T
@@ -253,13 +253,13 @@ namespace interpretor {
         value key_name;
 
         if (table_val == nullptr) {
-            machine.print("table_val == nullptr");
+            MACHINE_PRINT_LOG(machine, "\n""table_val == nullptr");
             goto Error1;
         }
         while (2 <= operands.size()) {
             key_name = operands.front();
             if (key_name.m_value_type != value_type::STRING) {
-                machine.print("name must be string type");
+                MACHINE_PRINT_LOG(machine, "\n""name must be string type");
                 goto Error1;
             }
             operands.pop_front();
@@ -284,7 +284,8 @@ namespace interpretor {
         table* table1;
 
         if (operands.size() < 2) {
-            machine.print("operands.size() < 2");
+            //MACHINE_PRINT_LOG(machine, "\n""operands.size() < 2");
+            MACHINE_PRINT_LOG(machine, "\n""operands.size() < 2");
             goto Error1;
         }
 
@@ -293,17 +294,17 @@ namespace interpretor {
         key_name = operands.front();
 
         if (table_val.m_value_type != value_type::GC_OBJECT) {
-            machine.print("table_val.m_value_type != value_type::GC_OBJECT");
+            MACHINE_PRINT_LOG(machine, "\n""table_val.m_value_type != value_type::GC_OBJECT");
             goto Error1;
         }
         if (key_name.m_value_type != value_type::STRING) {
-            machine.print("key_name.m_value_type != value_type::STRING");
+            MACHINE_PRINT_LOG(machine, "\n""key_name.m_value_type != value_type::STRING");
             goto Error1;
         }
 
         table1 = dynamic_cast<table*>(table_val.data.m_gc_object);
         if (table1 == nullptr) {
-            machine.print("dynamic_cast<table*>(table_val.data.m_gc_object) == nullptr");
+            MACHINE_PRINT_LOG(machine, "\n""dynamic_cast<table*>(table_val.data.m_gc_object) == nullptr");
             goto Error1;
         }
         ret_val = table1->get_value(key_name.data.m_string);
@@ -324,7 +325,7 @@ namespace interpretor {
         table* table1;
 
         if (operands.size() < 3) {
-            machine.print("operands.size() < 3");
+            MACHINE_PRINT_LOG(machine, "\n""operands.size() < 3");
             goto Error1;
         }
 
@@ -335,17 +336,17 @@ namespace interpretor {
         put_val = operands.front();
 
         if (table_val.m_value_type != value_type::GC_OBJECT) {
-            machine.print("table_val.m_value_type != value_type::GC_OBJECT");
+            MACHINE_PRINT_LOG(machine, "\n""table_val.m_value_type != value_type::GC_OBJECT");
             goto Error1;
         }
         if (key_name.m_value_type != value_type::STRING) {
-            machine.print("key_name.m_value_type != value_type::STRING");
+            MACHINE_PRINT_LOG(machine, "\n""key_name.m_value_type != value_type::STRING");
             goto Error1;
         }
 
         table1 = dynamic_cast<table*>(table_val.data.m_gc_object);
         if (table1 == nullptr) {
-            machine.print("dynamic_cast<table*>(table_val.data.m_gc_object) == nullptr");
+            MACHINE_PRINT_LOG(machine, "\n""dynamic_cast<table*>(table_val.data.m_gc_object) == nullptr");
             goto Error1;
         }
         table1->put_value(key_name.data.m_string, put_val);

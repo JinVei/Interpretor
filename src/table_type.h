@@ -4,11 +4,11 @@
 #include "value.h"
 
 #include <map>
-
+#include <string>
 namespace interpretor {
     class table : public gc_object{
     private:
-        std::map<const char*, value> m_table;
+        std::map<std::string, value> m_table;
     public:
         table();
         static auto create_table()->gc_object*;
