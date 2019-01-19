@@ -12,7 +12,7 @@ namespace interpretor {
         set_gc_recycle_flag();
         for (auto& object : m_table) {
             if (object.second.m_value_type == value_type::GC_OBJECT) {
-                object.second.data.m_gc_object->mark_gc_flag();
+                gc_object::mark_gc_flag(object.second.data.m_gc_object);
             }
         }
     }

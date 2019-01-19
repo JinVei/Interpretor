@@ -13,7 +13,11 @@ namespace interpretor{
         void set_gc_recycle_flag() {
             m_gc_recycle_flag = true;
         }
-    public:
+
+        static void mark_gc_flag(gc_object* object){
+            if(object != nullptr)
+                object->mark_gc_flag();
+        }
         //derived class must override this method to recycle its gc_object members(by invoking mark_gc_flag())
         virtual void mark_gc_flag() {
             set_gc_recycle_flag();

@@ -1,9 +1,9 @@
 #ifndef __MACHINE_H
 #define __MACHINE_H
-
-#include "stack.h"
-#include "instruction.h"
 #include "plog.h"
+#include "instruction.h"
+#include "garbage_collector.h"
+
 #include <vector>
 
 namespace interpretor{
@@ -25,6 +25,7 @@ namespace interpretor{
         
         std::vector<value>          m_stack;
         std::vector<instruction>    m_repertoire;
+        garbage_collector           m_garbage_collector;
 
         value                       m_nil_val;
 
@@ -38,6 +39,8 @@ namespace interpretor{
         void execute_instruction(instruction instruction);
         void increase_pc();
         void print(char* message);
+        void garbage_collection();
+        value new_gc_object(gc_object_type type);
 
         void set_run_error();
         void set_pc(unsigned int new_pc);

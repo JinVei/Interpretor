@@ -16,7 +16,5 @@ namespace interpretor {
         void garbage_recycle_mark(gc_object* root);
         void garbage_recycle_clean();
     };
-
-    extern garbage_collector g_garbage_collector;
 }
 #endif

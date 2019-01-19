@@ -1,3 +1,4 @@
+#include "plog.h"
 #include "primative_operator.h"
 #include "garbage_collector.h"
 #include "table_type.h"
@@ -239,7 +240,7 @@ namespace interpretor {
             MACHINE_PRINT_LOG(machine, "\n""if ((operand1.type() != value_type::NUMBER) || (operand2.type() != value_type::NUMBER))");
             goto Error1;
         }
-        machine.stack_index(operand1) = machine.stack_index(operand2);//T
+        machine.stack_index(operand1) = machine.stack_index(operand2);
 
         machine.increase_pc();;
         return;
@@ -248,7 +249,7 @@ namespace interpretor {
     }
 
     void primative_operator::new_table(machine & machine, std::list<value>& operands) {
-        value val = g_garbage_collector.create_gc_object(gc_object_type::TABLE);
+        value val = machine.new_gc_object(gc_object_type::TABLE);
         table* table_val = dynamic_cast<table*>(val.data.m_gc_object);
         value key_name;
 
@@ -284,7 +285,6 @@ namespace interpretor {
         table* table1;
 
         if (operands.size() < 2) {
-            //MACHINE_PRINT_LOG(machine, "\n""operands.size() < 2");
             MACHINE_PRINT_LOG(machine, "\n""operands.size() < 2");
             goto Error1;
         }

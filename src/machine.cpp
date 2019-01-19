@@ -4,6 +4,7 @@
 #include <thread>
 
 namespace interpretor {
+
     void machine::init_register() {
         m_register_pc = 0;
         m_register_flag = 0;
@@ -37,7 +38,6 @@ namespace interpretor {
         m_run_flag = 1;
         while (m_run_flag) {
             if (m_register_pc < 0 || m_register_pc >= m_repertoire.size()) {
-                //print("m_register_pc < 0 || m_register_pc >= m_repertoire.size()");
                 MACHINE_PRINT_LOG(*this, "\nm_register_pc < 0 || m_register_pc >= m_repertoire.size()");
                 set_run_error();
             }
@@ -72,8 +72,6 @@ namespace interpretor {
                   else if(operand_val._val == operand_register_type::ret_reg_type())
                       operator_param.push_back(stack_index(m_register_ret_index));
                   else if (operand_val._val == operand_register_type::ebp_reg_type()) {
-                      //value ebp = stack_index(value(m_register_ebp_index));
-                      //operator_param.push_back(stack_index( ebp + operand_val._offset));
                       operator_param.push_back(stack_index(m_register_ebp_index));
                   } else {
                       operator_param.push_back(value());
@@ -93,20 +91,15 @@ namespace interpretor {
                   }
                   break;
               case operand_type::stack_index_operand:
-                  //if (operand_val._val == operand_register_type::ret_reg_type())
-                  //    operator_param.push_back(value(m_register_ret_index) + operand_val._offset);
-                  //else if (operand_val._val == operand_register_type::ebp_reg_type())
-                  //    operator_param.push_back(value(m_register_ebp_index) + operand_val._offset);
-                  //else {
-                  //    operator_param.push_back(value());
-                  //    MACHINE_PRINT_LOG(*this, "\n""operand_type::operand_register_type is unrecognizable");
-                  //    set_run_error();
-                  //}
-                  //stack_val = stack_index(operand_val._val + offset);
+                  if (operand_val._val.type() != value_type::NUMBER) {
+                      MACHINE_PRINT_LOG(*this, "\n""if (operand_val._val.type() != value_type::NUMBER)");
+                      set_run_error();
+                  }
                   operator_param.push_back(operand_val._val + offset);
                   break;
               default:
                   MACHINE_PRINT_LOG(*this, "\n""not case to operand_val._operand_type");
+                  set_run_error();
                   break;
             }
 
@@ -126,12 +119,23 @@ namespace interpretor {
 
     void machine::print(char* log) {
         if (m_printer != nullptr) {
-//            std::chrono::system_clock::time_point now_time = std::chrono::system_clock::now();
-//            std::time_t time = std::chrono::system_clock::to_time_t(now_time);
             char time[64]; 
             GetTime(time, 64);
             m_printer->log((std::string(time) + " " + std::string(log) + "\n").c_str());
         }
+    }
+
+    void machine::garbage_collection() {
+        for (auto& val : m_stack) {
+            if (val.m_value_type == value_type::GC_OBJECT) {
+                m_garbage_collector.garbage_recycle_mark( val.gc_object() );
+            }
+        }
+    }
+
+    auto machine::new_gc_object(gc_object_type type) -> value{
+        value val = m_garbage_collector.create_gc_object(type);
+        return val;
     }
 
     void machine::set_run_error() {//need modify
