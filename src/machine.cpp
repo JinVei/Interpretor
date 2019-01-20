@@ -6,22 +6,27 @@
 namespace interpretor {
 
     void machine::init_register() {
+        m_nil_val = value();
         m_register_pc = 0;
         m_register_flag = 0;
 
-        value register_ret = value();
-        stack_push(register_ret);
-        m_register_ret_index = stack_length();
-
-        value ebp = value(stack_length() + 1);
-        stack_push(ebp);
-        m_register_ebp_index = stack_length();
+        register_init_list reg_init;
+        for (uint_t i = 0; i < reg_init.list.size(); ++i) {
+            auto it = m_registers_index.find((uint_t)reg_init.list[i].number());
+            if (it  == m_registers_index.end()) {
+                stack_push(value(0.0));
+                m_registers_index[(uint_t)reg_init.list[i].number()] = stack_top();
+            } else{
+                MACHINE_PRINT_LOG((*this),"m_registers_index.find(reg_init_list[i]) != end()");
+            }
+        }
 
         value stack_guard;
         stack_push(stack_guard);
-        m_stack_guard_index = stack_length();
+        m_stack_guard_index = (uint_t)stack_top().number();
 
-        stack_index(value(m_register_ebp_index)) = stack_length();
+        value index = m_registers_index[(uint_t)register_t::ebp().number()];
+        stack_index(index) = stack_top().number();
     }
 
     machine::machine() {
@@ -51,12 +56,15 @@ namespace interpretor {
             operand_val = instruction._operands_list.front();
             value stack_val;
             value offset = operand_val._offset;
-            if (offset == operand_register_type::ebp_reg_type())
-                offset = stack_index(m_register_ebp_index);
-            else if (offset == operand_register_type::ret_reg_type())
-                offset = stack_index(m_register_ret_index);
-            else
+            //value index;
+
+            if ((offset.type() == value_type::NUMBER)
+             && (m_registers_index.find((uint_t)offset.number()) != m_registers_index.end())) {
+                value& index = m_registers_index[(uint_t)offset.number()];
+                offset = stack_index(index);
+            } else {
                 offset = value(0.0);
+            }
 
             switch (operand_val._operand_type) {
               case operand_type::immediate_operand :
@@ -67,24 +75,24 @@ namespace interpretor {
                   operator_param.push_back(stack_val);
                   break;
               case operand_type::register_operand:
-                  if(operand_val._val == operand_register_type::pc_reg_type())
+/*                  if(operand_val._val == register_type::pc_reg_type())
                       operator_param.push_back(value(m_register_pc));
-                  else if(operand_val._val == operand_register_type::ret_reg_type())
-                      operator_param.push_back(stack_index(m_register_ret_index));
-                  else if (operand_val._val == operand_register_type::ebp_reg_type()) {
-                      operator_param.push_back(stack_index(m_register_ebp_index));
+                  else */
+                  if (m_registers_index.find((uint_t)operand_val._val.number()) != m_registers_index.end()) {
+                      value& index = m_registers_index[(uint_t)operand_val._val.number()];
+                      stack_val = stack_index(index);
+                      operator_param.push_back(stack_val);
                   } else {
-                      operator_param.push_back(value());
-                      MACHINE_PRINT_LOG(*this, "\n""operand_type::operand_register_type is unrecognizable");
-                      set_run_error();
+                          operator_param.push_back(value());
+                          MACHINE_PRINT_LOG(*this, "\n""operand_type::operand_register_type is unrecognizable");
+                          set_run_error();
                   }
                   break;
               case operand_type::register_address_operand:
-                  if (operand_val._val == operand_register_type::ret_reg_type())
-                      operator_param.push_back(m_register_ret_index);
-                  else if (operand_val._val == operand_register_type::ebp_reg_type())
-                      operator_param.push_back(m_register_ebp_index);
-                  else {
+                  if (m_registers_index.find((uint_t)operand_val._val.number()) != m_registers_index.end()) {
+                      value& index = m_registers_index[(uint_t)operand_val._val.number()];
+                      operator_param.push_back(index);
+                  } else {
                       operator_param.push_back(value());
                       MACHINE_PRINT_LOG(*this, "\n""operand_type::operand_register_type is unrecognizable");
                       set_run_error();
@@ -148,7 +156,7 @@ namespace interpretor {
     }
 
     void machine::set_returned_reg(value val) {
-        value& rer_val = stack_index(m_register_ret_index);
+        value& rer_val = stack_index(m_registers_index[(uint_t)register_t::ret().number()]);
         rer_val = val;
     }
 
@@ -161,7 +169,7 @@ namespace interpretor {
     }
 
     value machine::get_returned_reg() {
-        return stack_index(m_register_ret_index);
+        return stack_index(m_registers_index[(uint_t)register_t::ret().number()]);
     }
 
     unsigned int machine::get_flag_reg() {
@@ -173,8 +181,11 @@ namespace interpretor {
     }
 
     value machine::stack_pop() {
-        if (stack_length() == m_stack_guard_index)
-            return value();
+        if (stack_top().number() == m_stack_guard_index) {
+            MACHINE_PRINT_LOG(*this, "\n" "stack_top().number() == m_stack_guard_index");
+            set_run_error();
+            return m_nil_val;
+        }
 
         value top = m_stack.back();
         m_stack.pop_back();
@@ -194,9 +205,6 @@ namespace interpretor {
             set_run_error();
             return m_nil_val;
         }
-        return m_stack[(unsigned int)index.data.m_number];
-    }
-    unsigned int machine::stack_length() {
-        return m_stack.size() - 1;
+        return m_stack[(uint_t)index.data.m_number];
     }
 }

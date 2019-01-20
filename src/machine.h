@@ -5,8 +5,10 @@
 #include "garbage_collector.h"
 
 #include <vector>
+#include <unordered_map>
 
 namespace interpretor{
+    using uint_t = unsigned int;
 #define MACHINE_PRINT_LOG(mac, log) (mac).print(PLOG_FUNCTION_LOCATION_INFO " " log)
     class logger {
         public: virtual void log(const char* message) {}
@@ -14,15 +16,14 @@ namespace interpretor{
 
     class machine{
     private:
-        unsigned int                m_register_ret_index;
         unsigned int                m_register_pc;
         unsigned int                m_register_flag;
-        unsigned int                m_register_ebp_index;
         unsigned int                m_stack_guard_index;
 
         int                         m_error_flag = 0;
         int                         m_run_flag   = 0;
         
+        std::unordered_map<uint_t, value>   m_registers_index;
         std::vector<value>          m_stack;
         std::vector<instruction>    m_repertoire;
         garbage_collector           m_garbage_collector;
@@ -55,7 +56,6 @@ namespace interpretor{
         value stack_pop();
         value stack_top();
         value& stack_index(value index);
-        unsigned int stack_length();
     };
 }
 #endif

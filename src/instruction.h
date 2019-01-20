@@ -12,16 +12,23 @@ namespace interpretor{
         register_address_operand,
         stack_index_operand,
     };
-     struct operand_register_type{
-         static value pc_reg_type() {
-             return value(0.0);
-         }
-         static value ret_reg_type() {
+    struct register_t{
+         //static value pc_reg_type() {
+         //    return value(0.0);
+         //}
+         static value ret() {
              return value(1);
          }
-         static value ebp_reg_type() {
+         static value ebp() {
              return value(2);
          }
+    };
+    struct register_init_list {
+         std::vector<value> list = {
+             //register_t::pc(),
+             register_t::ret(),
+             register_t::ebp()
+         };
     };
     struct operand {
         operand_type _operand_type;
@@ -41,7 +48,7 @@ namespace interpretor{
             if(offset.type() == value_type::NUMBER)
                 _offset = offset;
             else
-                _offset = value(0.0);
+                _offset = value();
         }
     };
 
