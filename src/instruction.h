@@ -3,6 +3,7 @@
 #include "operator_registry.h"
 #include "value.h"
 
+#include <stdint.h>
 #include <list>
 namespace interpretor{
     enum class operand_type : uint8_t {
@@ -12,44 +13,28 @@ namespace interpretor{
         register_address_operand,
         stack_index_operand,
     };
-    struct register_t{
-         //static value pc_reg_type() {
-         //    return value(0.0);
-         //}
-         static value ret() {
-             return value(1);
-         }
-         static value ebp() {
-             return value(2);
-         }
+    using register_size = uint8_t;
+    enum class register_t : register_size {
+        ret,
+        ebp,
     };
+    extern value register_to_value(register_t reg);
+    extern register_t value_to_register(value val);
+
     struct register_init_list {
-         std::vector<value> list = {
+         std::vector<register_t> list = {
              //register_t::pc(),
-             register_t::ret(),
-             register_t::ebp()
+             register_t::ret,
+             register_t::ebp
          };
     };
     struct operand {
         operand_type _operand_type;
         value        _val;
         value        _offset;
-        operand() {
-            _offset = value();
-        }
-        operand(operand_type type, value val) {
-            _operand_type = type;
-            _val          = val;
-            _offset       = value();
-        }
-        operand(operand_type type, value val, value offset) {
-            _operand_type = type;
-            _val = val;
-            if(offset.type() == value_type::NUMBER)
-                _offset = offset;
-            else
-                _offset = value();
-        }
+        operand();
+        operand(operand_type type, value val);
+        operand(operand_type type, value val, value offset);
     };
 
     struct instruction{

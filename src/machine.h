@@ -23,7 +23,7 @@ namespace interpretor{
         int                         m_error_flag = 0;
         int                         m_run_flag   = 0;
         
-        std::unordered_map<uint_t, value>   m_registers_index;
+        std::unordered_map<register_t, value>   m_registers_index;
         std::vector<value>          m_stack;
         std::vector<instruction>    m_repertoire;
         garbage_collector           m_garbage_collector;

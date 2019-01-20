@@ -21,7 +21,7 @@ std::vector<instruction> repertoire = {
     },
     { operator_type::SUBTRACTION,
       std::list<operand>{ { operand_type::register_operand,
-                              register_t::ret()
+                              register_to_value(register_t::ret)
                             },
                             { operand_type::immediate_operand,
                               value(6)
@@ -30,7 +30,7 @@ std::vector<instruction> repertoire = {
     },
     { operator_type::MULTIPLICATION,
       std::list<operand>{ { operand_type::register_operand,
-                              register_t::ret()
+                              register_to_value(register_t::ret)
                             },
                             { operand_type::immediate_operand,
                               value(2)
@@ -39,7 +39,7 @@ std::vector<instruction> repertoire = {
     },
     { operator_type::DIVISION,
       std::list<operand>{ { operand_type::register_operand,
-                              register_t::ret()
+                              register_to_value(register_t::ret)
                             },
                             { operand_type::immediate_operand,
                               value(3)
@@ -48,7 +48,7 @@ std::vector<instruction> repertoire = {
     },
     { operator_type::CMP,
       std::list<operand>{ { operand_type::register_operand,
-                              register_t::ret()
+                              register_to_value(register_t::ret)
                             },
                             { operand_type::immediate_operand,
                               value(16)
@@ -81,7 +81,7 @@ std::vector<instruction> repertoire = {
     { operator_type::PUSH,
       std::list<operand>{
                            { operand_type::register_operand,
-                             register_t::ret()
+                             register_to_value(register_t::ret)
                            }
                          }
     },
@@ -92,7 +92,7 @@ std::vector<instruction> repertoire = {
     { operator_type::PUSH,
       std::list<operand>{
                            { operand_type::register_operand,
-                             register_t::ret()
+                             register_to_value(register_t::ret)
                            }
                          }
     },
@@ -100,11 +100,11 @@ std::vector<instruction> repertoire = {
       std::list<operand>{
                            { operand_type::stack_index_operand,
                              value(2),
-                             register_t::ebp()
+                             register_to_value(register_t::ebp)
                            },
                            { operand_type::stack_index_operand,
                              value(1),
-                             register_t::ebp(),
+                             register_to_value(register_t::ebp),
                            }
                          }
     },
@@ -112,7 +112,7 @@ std::vector<instruction> repertoire = {
       std::list<operand>{
                            { operand_type::stack_operand,
                              value(1),
-                             register_t::ebp()
+                             register_to_value(register_t::ebp)
                            },
                            { operand_type::immediate_operand,
                               value("key1")
@@ -123,10 +123,10 @@ std::vector<instruction> repertoire = {
       std::list<operand>{
                            { operand_type::stack_operand,
                              value(1),
-                             register_t::ebp()
+                             register_to_value(register_t::ebp)
                            },
                            { operand_type::register_operand,
-                             register_t::ret()
+                             register_to_value(register_t::ret)
                            },
                            { operand_type::immediate_operand,
                              value("val3")

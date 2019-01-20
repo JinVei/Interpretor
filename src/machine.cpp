@@ -12,10 +12,10 @@ namespace interpretor {
 
         register_init_list reg_init;
         for (uint_t i = 0; i < reg_init.list.size(); ++i) {
-            auto it = m_registers_index.find((uint_t)reg_init.list[i].number());
+            auto it = m_registers_index.find(reg_init.list[i]);
             if (it  == m_registers_index.end()) {
                 stack_push(value(0.0));
-                m_registers_index[(uint_t)reg_init.list[i].number()] = stack_top();
+                m_registers_index[reg_init.list[i]] = stack_top();
             } else{
                 MACHINE_PRINT_LOG((*this),"m_registers_index.find(reg_init_list[i]) != end()");
             }
@@ -25,7 +25,7 @@ namespace interpretor {
         stack_push(stack_guard);
         m_stack_guard_index = (uint_t)stack_top().number();
 
-        value index = m_registers_index[(uint_t)register_t::ebp().number()];
+        value index = m_registers_index[register_t::ebp];
         stack_index(index) = stack_top().number();
     }
 
@@ -59,8 +59,8 @@ namespace interpretor {
             //value index;
 
             if ((offset.type() == value_type::NUMBER)
-             && (m_registers_index.find((uint_t)offset.number()) != m_registers_index.end())) {
-                value& index = m_registers_index[(uint_t)offset.number()];
+             && (m_registers_index.find(value_to_register(offset)) != m_registers_index.end())) {
+                value& index = m_registers_index[value_to_register(offset)];
                 offset = stack_index(index);
             } else {
                 offset = value(0.0);
@@ -78,8 +78,8 @@ namespace interpretor {
 /*                  if(operand_val._val == register_type::pc_reg_type())
                       operator_param.push_back(value(m_register_pc));
                   else */
-                  if (m_registers_index.find((uint_t)operand_val._val.number()) != m_registers_index.end()) {
-                      value& index = m_registers_index[(uint_t)operand_val._val.number()];
+                  if (m_registers_index.find(value_to_register(operand_val._val)) != m_registers_index.end()) {
+                      value& index = m_registers_index[value_to_register(operand_val._val)];
                       stack_val = stack_index(index);
                       operator_param.push_back(stack_val);
                   } else {
@@ -89,8 +89,8 @@ namespace interpretor {
                   }
                   break;
               case operand_type::register_address_operand:
-                  if (m_registers_index.find((uint_t)operand_val._val.number()) != m_registers_index.end()) {
-                      value& index = m_registers_index[(uint_t)operand_val._val.number()];
+                  if (m_registers_index.find(value_to_register(operand_val._val)) != m_registers_index.end()) {
+                      value& index = m_registers_index[value_to_register(operand_val._val)];
                       operator_param.push_back(index);
                   } else {
                       operator_param.push_back(value());
@@ -156,7 +156,7 @@ namespace interpretor {
     }
 
     void machine::set_returned_reg(value val) {
-        value& rer_val = stack_index(m_registers_index[(uint_t)register_t::ret().number()]);
+        value& rer_val = stack_index(m_registers_index[register_t::ret]);
         rer_val = val;
     }
 
@@ -169,7 +169,7 @@ namespace interpretor {
     }
 
     value machine::get_returned_reg() {
-        return stack_index(m_registers_index[(uint_t)register_t::ret().number()]);
+        return stack_index(m_registers_index[register_t::ret]);
     }
 
     unsigned int machine::get_flag_reg() {
