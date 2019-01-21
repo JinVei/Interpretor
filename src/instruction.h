@@ -15,6 +15,7 @@ namespace interpretor{
     };
     using register_size = uint8_t;
     enum class register_t : register_size {
+        pc,
         ret,
         ebp,
     };
@@ -23,7 +24,7 @@ namespace interpretor{
 
     struct register_init_list {
          std::vector<register_t> list = {
-             //register_t::pc(),
+             register_t::pc,
              register_t::ret,
              register_t::ebp
          };

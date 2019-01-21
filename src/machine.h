@@ -16,7 +16,7 @@ namespace interpretor{
 
     class machine{
     private:
-        unsigned int                m_register_pc;
+        unsigned int                m_register_pc_index = 0;
         unsigned int                m_register_flag;
         unsigned int                m_stack_guard_index;
 

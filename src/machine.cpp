@@ -7,7 +7,6 @@ namespace interpretor {
 
     void machine::init_register() {
         m_nil_val = value();
-        m_register_pc = 0;
         m_register_flag = 0;
 
         register_init_list reg_init;
@@ -25,8 +24,11 @@ namespace interpretor {
         stack_push(stack_guard);
         m_stack_guard_index = (uint_t)stack_top().number();
 
+        m_register_pc_index = (unsigned int) m_registers_index[register_t::pc].number();
+
         value index = m_registers_index[register_t::ebp];
-        stack_index(index) = stack_top().number();
+        value& ebp = stack_index(index);
+        ebp = stack_top().number();
     }
 
     machine::machine() {
@@ -42,11 +44,13 @@ namespace interpretor {
     void machine::run() {
         m_run_flag = 1;
         while (m_run_flag) {
-            if (m_register_pc < 0 || m_register_pc >= m_repertoire.size()) {
+            value& pc = stack_index(m_register_pc_index);
+
+            if (pc.number() < 0 || pc.number() >= m_repertoire.size()) {
                 MACHINE_PRINT_LOG(*this, "\nm_register_pc < 0 || m_register_pc >= m_repertoire.size()");
                 set_run_error();
             }
-            execute_instruction(m_repertoire[m_register_pc]);
+            execute_instruction(m_repertoire[(unsigned int)pc.number()]);
         }
     }
     void machine::execute_instruction(instruction instruction) {
@@ -56,7 +60,6 @@ namespace interpretor {
             operand_val = instruction._operands_list.front();
             value stack_val;
             value offset = operand_val._offset;
-            //value index;
 
             if ((offset.type() == value_type::NUMBER)
              && (m_registers_index.find(value_to_register(offset)) != m_registers_index.end())) {
@@ -117,12 +120,13 @@ namespace interpretor {
     }
 
     void machine::increase_pc() {
-        ++m_register_pc;
+        value& pc = stack_index(m_register_pc_index);
+        ++(pc.data.m_number);
     }
 
     void machine::set_pc(unsigned int new_pc) {
-
-        m_register_pc = new_pc;
+        value& pc = stack_index(m_register_pc_index);
+        pc.data.m_number = new_pc;
     }
 
     void machine::print(char* log) {
@@ -148,10 +152,13 @@ namespace interpretor {
 
     void machine::set_run_error() {//need modify
         m_error_flag = 1;
+        //add error_callbake here
+        //#ifdef DEBUG
         MACHINE_PRINT_LOG(*this, "\nloop in set_run_error");
         while (m_error_flag != 0) {
             std::this_thread::sleep_for(std::chrono::seconds(5));
         }
+        //#endif //DEBUG
         return;
     }
 
