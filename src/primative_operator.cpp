@@ -29,7 +29,7 @@ namespace interpretor {
             goto Error1;
         }
 
-        number = operand1.data.m_number + operand2.data.m_number;
+        number = operand1.number() + operand2.number();
         machine.set_returned_reg(value(number));
         machine.increase_pc();
         return;
@@ -59,7 +59,7 @@ namespace interpretor {
             goto Error1;
         }
 
-        number = operand1.data.m_number - operand2.data.m_number;
+        number = operand1.number() - operand2.number();
         machine.set_returned_reg(value(number));
         machine.increase_pc();
         return;
@@ -89,7 +89,7 @@ namespace interpretor {
             goto Error1;
         }
 
-        number = operand1.data.m_number * operand2.data.m_number;
+        number = operand1.number() * operand2.number();
         machine.set_returned_reg(value(number));
         machine.increase_pc();
         return;
@@ -118,12 +118,12 @@ namespace interpretor {
             MACHINE_PRINT_LOG(machine, "\n""operands type must be value_type::NUMBER");
             goto Error1;
         }
-        if (fabs(operand2.data.m_number) < std::numeric_limits<double>::epsilon()) {
+        if (fabs(operand2.number()) < std::numeric_limits<double>::epsilon()) {
             MACHINE_PRINT_LOG(machine, "\n""divisor type must cannot be zero");
             goto Error1;
         }
 
-        number = operand1.data.m_number / operand2.data.m_number;
+        number = operand1.number() / operand2.number();
         machine.set_returned_reg(value(number));
         machine.increase_pc();
         return;
@@ -250,7 +250,7 @@ namespace interpretor {
 
     void primative_operator::new_table(machine & machine, std::list<value>& operands) {
         value val = machine.new_gc_object(gc_object_type::TABLE);
-        table* table_val = dynamic_cast<table*>(val.data.m_gc_object);
+        table* table_val = dynamic_cast<table*>(val.m_gc_object);
         value key_name;
 
         if (table_val == nullptr) {
@@ -268,7 +268,7 @@ namespace interpretor {
             val = operands.front();
             operands.pop_front();
 
-            table_val->put_value(key_name.data.m_string, val);
+            table_val->put_value(key_name.m_string, val);
         }
         machine.set_returned_reg(value(table_val));
         machine.increase_pc();;
@@ -302,12 +302,12 @@ namespace interpretor {
             goto Error1;
         }
 
-        table1 = dynamic_cast<table*>(table_val.data.m_gc_object);
+        table1 = dynamic_cast<table*>(table_val.m_gc_object);
         if (table1 == nullptr) {
-            MACHINE_PRINT_LOG(machine, "\n""dynamic_cast<table*>(table_val.data.m_gc_object) == nullptr");
+            MACHINE_PRINT_LOG(machine, "\n""dynamic_cast<table*>(table_val.m_gc_object) == nullptr");
             goto Error1;
         }
-        ret_val = table1->get_value(key_name.data.m_string);
+        ret_val = table1->get_value(key_name.m_string);
 
         machine.set_returned_reg(ret_val);
         machine.increase_pc();
@@ -344,12 +344,12 @@ namespace interpretor {
             goto Error1;
         }
 
-        table1 = dynamic_cast<table*>(table_val.data.m_gc_object);
+        table1 = dynamic_cast<table*>(table_val.m_gc_object);
         if (table1 == nullptr) {
-            MACHINE_PRINT_LOG(machine, "\n""dynamic_cast<table*>(table_val.data.m_gc_object) == nullptr");
+            MACHINE_PRINT_LOG(machine, "\n""dynamic_cast<table*>(table_val.m_gc_object) == nullptr");
             goto Error1;
         }
-        table1->put_value(key_name.data.m_string, put_val);
+        table1->put_value(key_name.m_string, put_val);
 
         machine.set_returned_reg(value());
         machine.increase_pc();

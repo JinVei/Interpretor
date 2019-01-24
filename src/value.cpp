@@ -3,19 +3,19 @@
 namespace interpretor {
     value::value() {
         m_value_type = value_type::NIL;
-        data.m_number = 0;
+        m_number = 0;
     }
     value::value(double val) {
         this->m_value_type = value_type::NUMBER;
-        this->data.m_number = val;
+        this->m_number = val;
     }
     value::value(char * val) {
         m_value_type = value_type::STRING;
-        data.m_string = val;
+        m_string = val;
     }
     value::value(interpretor::gc_object* val) {
         m_value_type = value_type::GC_OBJECT;
-        data.m_gc_object = val;
+        m_gc_object = val;
     }
 
     value value::operator+(value& val) {
@@ -86,15 +86,15 @@ namespace interpretor {
     }
 
     double value::number() {
-        return data.m_number;
+        return m_number;
     }
 
     char * value::string() {
-        return data.m_string;
+        return m_string;
     }
 
     gc_object* value::gc_object() {
-        return data.m_gc_object;
+        return m_gc_object;
     }
 
     value_type value::type() {

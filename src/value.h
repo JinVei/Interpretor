@@ -18,7 +18,7 @@ namespace interpretor{
             double      m_number;
             char*       m_string;
             gc_object*  m_gc_object;
-        }data;
+        };
 
     public:
         value();

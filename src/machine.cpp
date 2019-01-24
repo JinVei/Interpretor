@@ -121,12 +121,12 @@ namespace interpretor {
 
     void machine::increase_pc() {
         value& pc = stack_index(m_register_pc_index);
-        ++(pc.data.m_number);
+        ++(pc.m_number);
     }
 
     void machine::set_pc(unsigned int new_pc) {
         value& pc = stack_index(m_register_pc_index);
-        pc.data.m_number = new_pc;
+        pc.m_number = new_pc;
     }
 
     void machine::print(char* log) {
@@ -205,13 +205,13 @@ namespace interpretor {
 
     value& machine::stack_index(value index) {
         if (index.m_value_type != value_type::NUMBER
-            || index.data.m_number < 0
-            || index.data.m_number > stack_top().data.m_number) 
+            || index.number() < 0
+            || index.number() > stack_top().number()) 
         {
             MACHINE_PRINT_LOG(*this, "\n" "Index.m_value_type != value_type::NUMBER or Stack over index");
             set_run_error();
             return m_nil_val;
         }
-        return m_stack[(uint_t)index.data.m_number];
+        return m_stack[(uint_t)index.number()];
     }
 }
