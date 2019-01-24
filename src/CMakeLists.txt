@@ -1,14 +1,19 @@
 cmake_minimum_required(VERSION 3.0) 
 
-file(GLOB SRC  ./*.cpp)
-file(GLOB HDR ./*.h)
+file(GLOB M_SRC  ./*.cpp)
+file(GLOB M_HDR ./*.h)
 
-source_group("source_file" FILES ${SRC})
-source_group("header_file" FILES ${HDR})
+source_group("machine_source" FILES ${M_SRC})
+source_group("machine_header" FILES ${M_HDR})
+
+file(GLOB A_SRC  ./analyzer/*.cpp)
+file(GLOB A_HDR ./analyzer/*.h)
+
+source_group("analyzer_source" FILES ${A_SRC})
+source_group("analyzer_header" FILES ${A_HDR})
 
 if( WIN32 )
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
-#add_executable(SchemeInterpretor ${SRC} ${HDR})
-ADD_LIBRARY(libSchemeInterpretor   STATIC   ${SRC} ${HDR})
+ADD_LIBRARY(libSchemeInterpretor   STATIC   ${M_SRC} ${A_SRC} ${M_HDR} ${A_HDR})
