@@ -1,7 +1,10 @@
 #include "lexical_analyzer.h"
 #include "plog.h"
+
 namespace interpretor {
-    lexical_analyzer::word::word(phrase * expression) {
+    std::map<std::string, std::string> g_identifier;
+
+    lexical_analyzer::word::word(word_expression expression) {
         _type = type::expreesion;
         _expression = expression;
     }
@@ -10,7 +13,7 @@ namespace interpretor {
         _number = number;
     }
 
-    lexical_analyzer::word::word(type type, std::string* str) {
+    lexical_analyzer::word::word(type type, std::string str) {
         if (type == word::type::label)
             _label = str;
         else if (type == word::type::quoto)
@@ -20,17 +23,17 @@ namespace interpretor {
 
         _type = type;
     }
-    lexical_analyzer::word::~word() {
-        if (_type == word::type::expreesion && _expression != nullptr) {
-            delete _expression;
-        }
-        else if (_type == word::type::label && _label != nullptr) {
-            delete _label;
-        }
-        else if (_type == word::type::quoto && _quote != nullptr) {
-            delete _quote;
-        }
-    }
+    //lexical_analyzer::word::~word() {
+    //    if (_type == word::type::expreesion && _expression != nullptr) {
+    //        delete _expression;
+    //    }
+    //    else if (_type == word::type::label && _label != nullptr) {
+    //        delete _label;
+    //    }
+    //    else if (_type == word::type::quoto && _quote != nullptr) {
+    //        delete _quote;
+    //    }
+    //}
 
     void lexical_analyzer::finite_state() {
         std::shared_ptr<word> word_ptr;
@@ -50,7 +53,7 @@ namespace interpretor {
             case '(':
                 ++m_text_index;
                 word_ptr = expression_state();
-                m_expression_tree._words.push_back(word_ptr);
+                m_expression_tree.push_back(word_ptr);
                 break;;
 
             default:
@@ -64,7 +67,7 @@ namespace interpretor {
     }
 
     auto lexical_analyzer::expression_state() -> std::shared_ptr<word> {
-        phrase* expression = new phrase();
+        word_expression expression;// = new phrase();
         std::shared_ptr<word> tmp_val;
 
         while (!m_error_flag) {
@@ -73,10 +76,16 @@ namespace interpretor {
                 goto ErrorExit;
             }
             switch (m_text[m_text_index]) {
+            case '\n':
+            case '\r':
+            case ' ':
+                ++m_text_index;
+                break;
+
             case '(':
                 ++m_text_index;
                 tmp_val = expression_state();
-                expression->_words.push_back(tmp_val);
+                expression.push_back(tmp_val);
                 break;
 
             case ')':
@@ -86,26 +95,20 @@ namespace interpretor {
             case '\'':
                 ++m_text_index;
                 tmp_val = quote_state();
-                expression->_words.push_back(tmp_val);
-                break;
-
-            case '\n':
-            case '\r':
-            case ' ':
-                ++m_text_index;
+                expression.push_back(tmp_val);
                 break;
 
             default:
                 if ('0' <= m_text[m_text_index] && m_text[m_text_index] <= '9') {
                     tmp_val = number_state();
-                    expression->_words.push_back(tmp_val);
+                    expression.push_back(tmp_val);
                     break;
 
                 } else if (('a' <= m_text[m_text_index] && m_text[m_text_index] <= 'z')
                       || ('A' <= m_text[m_text_index] && m_text[m_text_index] <= 'Z'))
                 {
                     tmp_val = label_state();
-                    expression->_words.push_back(tmp_val);
+                    expression.push_back(tmp_val);
                     break;
                 } else {
                     m_error_message = PLOG_FUNCTION_LOCATION_INFO "\n no matching case ";
@@ -183,7 +186,7 @@ namespace interpretor {
             case '\n':
             case ' ' :
             case ')':
-                return std::shared_ptr<word>(new word(word::type::quoto, new std::string(std::move(quoto))));
+                return std::shared_ptr<word>(new word(word::type::quoto,std::string(std::move(quoto))));
 
             default:
                 //[!] to [~]
@@ -219,7 +222,7 @@ namespace interpretor {
             case '\n':
             case ' ':
             case ')':
-                return std::shared_ptr<word>(new word(word::type::label, new std::string(std::move(label))));
+                return std::shared_ptr<word>(new word(word::type::label, std::string(std::move(label))));
 
             default:
                 //[!] to [~]
@@ -252,7 +255,7 @@ namespace interpretor {
             case '\n':
             case ' ':
             case ')':
-                return std::shared_ptr<word>(new word(word::type::label, new std::string(std::move(label))));
+                return std::shared_ptr<word>(new word(word::type::label, std::string(std::move(label))));
 
             default:
                 //[!] to [~]
@@ -272,6 +275,18 @@ namespace interpretor {
             m_error_handler();
         m_error_flag = true;
         return std::shared_ptr<word>();
+    }
+
+    void lexical_analyzer::parser(word_expression expression) {
+        for (auto word : expression) {
+            if (word->_type == word::type::expreesion) {
+                parser(word->_expression);
+            }
+            else if(word->_type == word::type::label){
+                word->_label.push_back('%');
+                g_identifier[word->_label] = word->_label;
+            }
+        }
     }
 
     lexical_analyzer::lexical_analyzer(const char * text, unsigned int text_len) {

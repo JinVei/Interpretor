@@ -236,11 +236,11 @@ namespace interpretor {
         operand1 = operands.front();
         operands.pop_front();
         operand2 = operands.front();
-        if ((operand1.type() != value_type::NUMBER) || (operand2.type() != value_type::NUMBER)) {
-            MACHINE_PRINT_LOG(machine, "\n""if ((operand1.type() != value_type::NUMBER) || (operand2.type() != value_type::NUMBER))");
+        if (operand1.type() != value_type::NUMBER) {
+            MACHINE_PRINT_LOG(machine, "\n""if (operand1.type() != value_type::NUMBER)");
             goto Error1;
         }
-        machine.stack_index(operand1) = machine.stack_index(operand2);
+        machine.stack_index(operand1) = operand2;
 
         machine.increase_pc();;
         return;

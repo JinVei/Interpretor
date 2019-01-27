@@ -102,7 +102,7 @@ std::vector<instruction> repertoire = {
                              value(2),
                              register_to_value(register_t::ebp)
                            },
-                           { operand_type::stack_index_operand,
+                           { operand_type::stack_operand,
                              value(1),
                              register_to_value(register_t::ebp),
                            }

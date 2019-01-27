@@ -65,22 +65,23 @@ namespace interpretor {
              && (m_registers_index.find(value_to_register(offset)) != m_registers_index.end())) {
                 value& index = m_registers_index[value_to_register(offset)];
                 offset = stack_index(index);
-            } else {
+            }/* else {
                 offset = value(0.0);
-            }
+            }*/
 
             switch (operand_val._operand_type) {
               case operand_type::immediate_operand :
-                  operator_param.push_back(operand_val._val);
+                  if (offset == value())
+                    operator_param.push_back(operand_val._val);
+                  else
+                      operator_param.push_back(operand_val._val + offset);
                   break;
               case operand_type::stack_operand :
+                  if (offset == value())     offset = value(0.0);
                   stack_val = stack_index(operand_val._val + offset);
                   operator_param.push_back(stack_val);
                   break;
               case operand_type::register_operand:
-/*                  if(operand_val._val == register_type::pc_reg_type())
-                      operator_param.push_back(value(m_register_pc));
-                  else */
                   if (m_registers_index.find(value_to_register(operand_val._val)) != m_registers_index.end()) {
                       value& index = m_registers_index[value_to_register(operand_val._val)];
                       stack_val = stack_index(index);
@@ -106,6 +107,7 @@ namespace interpretor {
                       MACHINE_PRINT_LOG(*this, "\n""if (operand_val._val.type() != value_type::NUMBER)");
                       set_run_error();
                   }
+                  if (offset == value())     offset = value(0.0);
                   operator_param.push_back(operand_val._val + offset);
                   break;
               default:

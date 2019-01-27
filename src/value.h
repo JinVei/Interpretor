@@ -16,20 +16,20 @@ namespace interpretor{
         
         union{
             double      m_number;
-            char*       m_string;
+            const char* m_string;
             gc_object*  m_gc_object;
         };
 
     public:
         value();
         value(double val);
-        value(char* val);
+        value(const char* val);
         value(gc_object* val);
         value operator+(value&);
         value operator-(value&);
         bool operator==(value&);
         double number();
-        char* string();
+        const char* string();
         gc_object* gc_object();
         value_type type();
     };

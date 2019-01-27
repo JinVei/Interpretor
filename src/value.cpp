@@ -9,7 +9,7 @@ namespace interpretor {
         this->m_value_type = value_type::NUMBER;
         this->m_number = val;
     }
-    value::value(char * val) {
+    value::value(const char * val) {
         m_value_type = value_type::STRING;
         m_string = val;
     }
@@ -67,7 +67,7 @@ namespace interpretor {
         if (this->type() == val.type()) {
             switch (this->type()) {
             case value_type::NUMBER:
-                ret = (this->number() == val.number() ? true : false);
+                ret = (fabs(this->number() - val.number()) < std::numeric_limits<double>::epsilon()) ? true : false;
                 break;
             case value_type::GC_OBJECT:
                 ret = (this->gc_object() == val.gc_object() ? true : false);
@@ -89,7 +89,7 @@ namespace interpretor {
         return m_number;
     }
 
-    char * value::string() {
+    const char * value::string() {
         return m_string;
     }
 

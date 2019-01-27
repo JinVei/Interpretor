@@ -18,6 +18,10 @@ namespace interpretor{
         pc,
         ret,
         ebp,
+        env0,
+        env1,
+        eax,
+        R0,
     };
     extern value register_to_value(register_t reg);
     extern register_t value_to_register(value val);
@@ -26,7 +30,11 @@ namespace interpretor{
          std::vector<register_t> list = {
              register_t::pc,
              register_t::ret,
-             register_t::ebp
+             register_t::ebp,
+             register_t::env0,
+             register_t::env1,
+             register_t::eax,
+             register_t::R0,
          };
     };
     struct operand {
@@ -37,6 +45,7 @@ namespace interpretor{
         operand(operand_type type, value val);
         operand(operand_type type, value val, value offset);
     };
+    using operand_list = std::list<operand>;
 
     struct instruction{
         operator_type         _operator_type;

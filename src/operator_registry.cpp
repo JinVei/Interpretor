@@ -54,7 +54,7 @@ namespace interpretor {
         },
         { operator_type::MOV,
           operator_item{ operator_type::MOV,               "mov",         primative_operator::move,
-                        "cmp [index2] [index2]\n"\
+                        "cmp [index2] [value]\n"\
                         "Move the value of index2 into index1 \n" }
         },
         { operator_type::TABLE,
