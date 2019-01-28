@@ -1,5 +1,6 @@
 #ifndef __LEXICAL_ANALYZER_H
 #define __LEXICAL_ANALYZER_H
+#include "table_type.h"
 #include <list>
 #include <functional>
 #include <string>
@@ -11,9 +12,6 @@ namespace interpretor {
     public:
         struct word;
         using word_expression = std::list<std::shared_ptr<word>>;
-        //struct phrase {
-        //    std::list<std::shared_ptr<word>> _words;
-        //};
 
         struct word {
             enum class type {
@@ -22,22 +20,23 @@ namespace interpretor {
                 label,
                 quoto
             };
-//            union {
-            word_expression     _expression;// = nullptr;
+
+            word_expression     _expression;
             double              _number;
             std::string         _label;
             std::string         _quote;
-//            };
 
-            type _type;
+            type                _type;
+            word*               _pre_word = nullptr;
 
-            //word& operator=(word&) = delete;
+            unsigned int                        _compile_time_env_id;
+            std::list<std::function<void()>>    _parser_done_hander_list;
 
+            word() {};
             word(word_expression expression);
             word(double number);
             word(type type, std::string str);
 
-//            virtual ~word();
         };
 
     private:
@@ -47,7 +46,7 @@ namespace interpretor {
         unsigned int                m_text_length   = 0;
         unsigned int                m_text_index    = 0;
         std::function<void()>       m_error_handler;
-        word_expression             m_expression_tree;
+        word                        m_expression_tree;
 
         void finite_state();
         auto expression_state() -> std::shared_ptr<word>;
@@ -56,9 +55,11 @@ namespace interpretor {
         auto label_state()      -> std::shared_ptr<word>;
         auto label_state(std::string& label)->std::shared_ptr<word>;
 
-        void parser(word_expression expression);
+        bool parser(word expression);
     public:
-        const char*     m_error_message = nullptr;
+        const char*         m_error_message = nullptr;
+        std::vector<table>  m_compile_time_env_table;
+        unsigned int        m_current_env_id;
 
         lexical_analyzer(const char* text, unsigned int text_len);
         bool do_analysis();

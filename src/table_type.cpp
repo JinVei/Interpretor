@@ -26,7 +26,15 @@ namespace interpretor {
             return value();
         }
     }
+
     void table::put_value(const char * name, value val) {
             m_table[std::string(name)] = val;
-        }
+    }
+
+    bool table::check_name(std::string name) {
+        if (m_table.find(name) == m_table.end())
+            return false;
+        else
+            return true;
+    }
 }

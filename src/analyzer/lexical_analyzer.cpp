@@ -23,20 +23,10 @@ namespace interpretor {
 
         _type = type;
     }
-    //lexical_analyzer::word::~word() {
-    //    if (_type == word::type::expreesion && _expression != nullptr) {
-    //        delete _expression;
-    //    }
-    //    else if (_type == word::type::label && _label != nullptr) {
-    //        delete _label;
-    //    }
-    //    else if (_type == word::type::quoto && _quote != nullptr) {
-    //        delete _quote;
-    //    }
-    //}
 
     void lexical_analyzer::finite_state() {
         std::shared_ptr<word> word_ptr;
+        m_expression_tree._type = word::type::expreesion;
 
         while (!m_error_flag) {
             if (m_text_length <= m_text_index) {
@@ -53,8 +43,8 @@ namespace interpretor {
             case '(':
                 ++m_text_index;
                 word_ptr = expression_state();
-                m_expression_tree.push_back(word_ptr);
-                break;;
+                m_expression_tree._expression.push_back(word_ptr);
+                break;
 
             default:
                 m_error_flag = true;
@@ -277,16 +267,71 @@ namespace interpretor {
         return std::shared_ptr<word>();
     }
 
-    void lexical_analyzer::parser(word_expression expression) {
-        for (auto word : expression) {
-            if (word->_type == word::type::expreesion) {
-                parser(word->_expression);
+    static void dispose_label_suffix(lexical_analyzer::word& word) {
+        word._label.push_back('%');
+        g_identifier[word._label] = word._label;
+    }
+
+    static void dispose_lambda_label(lexical_analyzer& analyzer, lexical_analyzer::word& word) {
+        if (word._label == "lambda%") {
+            unsigned int pre_env_id = analyzer.m_current_env_id;
+            
+            analyzer.m_compile_time_env_table.push_back(table());
+            analyzer.m_current_env_id = analyzer.m_compile_time_env_table.size() - 1;
+
+            table& current_env = analyzer.m_compile_time_env_table[analyzer.m_current_env_id];
+            current_env.put_value("pre_env_id", value(pre_env_id));
+
+            lexical_analyzer::word* pre_word = word._pre_word;
+            pre_word->_parser_done_hander_list.push_back(
+                [&analyzer, pre_env_id]() {
+                    analyzer.m_current_env_id = pre_env_id;
+                } 
+            );
+        }
+    }
+
+    static bool dispose_define_label(lexical_analyzer& analyzer, lexical_analyzer::word_expression::iterator& it_word) {
+        if ((*it_word)->_label == "define%") {
+            auto it_next_word = std::next(it_word, 1);
+            if ((*it_next_word)->_type != lexical_analyzer::word::type::label) {
+                analyzer.m_error_message = PLOG_FUNCTION_LOCATION_INFO "\n The defining identifier is not a label type\n";
+                return false;
             }
-            else if(word->_type == word::type::label){
-                word->_label.push_back('%');
-                g_identifier[word->_label] = word->_label;
+            std::string identifier = (*it_next_word)->_label;
+            g_identifier[identifier] = identifier;
+            table& env = analyzer.m_compile_time_env_table[analyzer.m_current_env_id];
+            env.put_value(identifier.c_str(), value(g_identifier[identifier].c_str()));
+        }
+        return true;
+    }
+
+    bool lexical_analyzer::parser(word expression) {
+        bool is_ok;
+        auto it_word = expression._expression.begin();
+        for (; it_word != expression._expression.end(); ) {
+            (*(*it_word))._pre_word = &expression;
+            (*(*it_word))._compile_time_env_id = m_current_env_id;
+
+            if ((*it_word)->_type == word::type::expreesion) {
+                is_ok = parser((*it_word)->_expression);
+                if (!is_ok) return false;
+            }
+            else if ((*it_word)->_type == word::type::label) {
+                dispose_label_suffix(*(*it_word));
+                if ((*it_word) == expression._expression.front()) {
+                    dispose_lambda_label(*this, *(*it_word));
+                    is_ok = dispose_define_label(*this, it_word);
+                    if (!is_ok) return false;
+                }
             }
         }
+
+        for (auto handler : expression._parser_done_hander_list) {
+            handler();
+        }
+
+        return true;
     }
 
     lexical_analyzer::lexical_analyzer(const char * text, unsigned int text_len) {
@@ -296,6 +341,13 @@ namespace interpretor {
 
     bool lexical_analyzer::do_analysis() {
         finite_state();
+
+        m_compile_time_env_table.clear();
+        m_compile_time_env_table.push_back(table());
+        m_current_env_id = m_compile_time_env_table.size() - 1;
+        m_expression_tree._compile_time_env_id = m_current_env_id;
+        m_error_flag = parser(m_expression_tree);
+
         return m_error_flag;
     }
 }

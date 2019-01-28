@@ -15,6 +15,7 @@ namespace interpretor {
         auto mark_gc_flag() -> void override;
         value get_value(const char* name);
         void put_value(const char* name, value val);
+        bool check_name(std::string name);
     };
 }
 #endif

@@ -201,7 +201,7 @@ namespace interpretor {
         }
         else if (word._type == lexical_analyzer::word::type::label) {
             std::string label = word._label;
-            int deep = find_identifier(label.c_str());
+            int deep = find_identifier(label.c_str(), word._compile_time_env_id);
             if (deep < 0) {
                 m_error_message = PLOG_FUNCTION_LOCATION_INFO "\n find_identifier(label.c_str()): deep < 0\n";
                 return false;
@@ -261,7 +261,7 @@ namespace interpretor {
             }
             else /*if (word._type == lexical_analyzer::word::type::label) */{
                 std::string label = word._label;
-                int deep = find_identifier(label.c_str());
+                int deep = find_identifier(label.c_str(), word._compile_time_env_id);
                 if (deep < 0) {
                     m_error_message = PLOG_FUNCTION_LOCATION_INFO "\n find_identifier(label.c_str()): deep < 0\n";
                     return false;
@@ -276,5 +276,28 @@ namespace interpretor {
                 return true;
             }
         }
+    }
+    int code_generator::find_identifier(const char * label, unsigned int current_env_id)
+    {
+        int deep = 0;
+        bool is_exist;
+        unsigned int env_id = current_env_id;
+
+        do {
+            is_exist = m_analyze.m_compile_time_env_table[env_id].check_name(label);
+            if (is_exist)
+                return deep;
+            else {
+                value pre_env_id = m_analyze.m_compile_time_env_table[env_id].get_value("pre_env_id");
+                if (pre_env_id == value())
+                    return -1;
+
+                if (pre_env_id.type() != value_type::NUMBER)
+                    std::abort();
+
+                env_id = (unsigned int)pre_env_id.number();
+                ++deep;
+            }
+        } while (1);
     }
 }
