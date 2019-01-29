@@ -11,10 +11,10 @@ namespace interpretor {
     class code_generator {
     public:
         std::string m_error_message;
-        lexical_analyzer&    m_analyze;
-        code_generator(lexical_analyzer&    analyze) : m_analyze(analyze) {};
+        std::vector<table>  m_compile_time_env_table;
+        code_generator(std::vector<table>&  compile_time_env_table);
 
-        void compile(lexical_analyzer::word_expression& expression_tree, std::vector<instruction>& target_instruction);
+        bool compile(lexical_analyzer::word_expression& expression_tree, std::vector<instruction>& target_instruction);
         bool expression_compile(lexical_analyzer::word_expression& expression_tree, std::vector<instruction>& target_instruction);
         bool operation_compile(lexical_analyzer::word& word, std::vector<instruction>& target_instruction);
 
@@ -24,8 +24,6 @@ namespace interpretor {
             std::vector<instruction>& target_instruction
         );
         int find_identifier(const char* label, unsigned int current_env_id);
-        void primative_operator_compile();
-        void lambda_compile();
         void define_compile();
     };
     using code_generator_handle = std::function<bool(code_generator& generator,

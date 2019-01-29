@@ -135,10 +135,11 @@ namespace interpretor {
     }
 
     void machine::print(const char* log) {
+        char time[64];
+        GetTime(time, 64);
+        m_log_message = (std::string(time) + " " + std::string(log) + "\n");
         if (m_printer != nullptr) {
-            char time[64]; 
-            GetTime(time, 64);
-            m_printer->log((std::string(time) + " " + std::string(log) + "\n").c_str());
+            m_printer->log(m_log_message.c_str());
         }
     }
 

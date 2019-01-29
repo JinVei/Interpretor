@@ -359,7 +359,7 @@ namespace interpretor {
         machine.set_run_error();
     }
 
-    static void log(machine& machine, std::list<value>& operands) {
+    void primative_operator::log(machine& machine, std::list<value>& operands) {
         if (operands.size() < 0) {
             MACHINE_PRINT_LOG(machine, "\n""operands.size() < 0\n");
             return;
@@ -370,7 +370,7 @@ namespace interpretor {
         }
         machine.print(operands.front().string());
     }
-    static void shut_down(machine& machine, std::list<value>& operands) {
+    void primative_operator::shut_down(machine& machine, std::list<value>& operands) {
         machine.shut_down();
     }
 }

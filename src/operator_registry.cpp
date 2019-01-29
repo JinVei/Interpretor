@@ -73,7 +73,7 @@ namespace interpretor {
                         "Put a key-value pair into table\n"}
         },
         { operator_type::LOG,
-          operator_item{ operator_type::LOG,                "log",    primative_operator::log,
+          operator_item{ operator_type::LOG,                "log",         primative_operator::log,
                         "log [message]\n"
                         "print message\n"}
         },

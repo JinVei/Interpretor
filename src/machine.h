@@ -57,6 +57,8 @@ namespace interpretor{
         value stack_pop();
         value stack_top();
         value& stack_index(value index);
+
+        std::string     m_log_message;
     };
 }
 #endif

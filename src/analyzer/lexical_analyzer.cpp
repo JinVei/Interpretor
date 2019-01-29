@@ -26,7 +26,7 @@ namespace interpretor {
 
     void lexical_analyzer::finite_state() {
         std::shared_ptr<word> word_ptr;
-        m_expression_tree._type = word::type::expreesion;
+        m_lexical_tree._type = word::type::expreesion;
 
         while (!m_error_flag) {
             if (m_text_length <= m_text_index) {
@@ -43,7 +43,7 @@ namespace interpretor {
             case '(':
                 ++m_text_index;
                 word_ptr = expression_state();
-                m_expression_tree._expression.push_back(word_ptr);
+                m_lexical_tree._expression.push_back(word_ptr);
                 break;
 
             default:
@@ -298,7 +298,7 @@ namespace interpretor {
                 analyzer.m_error_message = PLOG_FUNCTION_LOCATION_INFO "\n The defining identifier is not a label type\n";
                 return false;
             }
-            std::string identifier = (*it_next_word)->_label;
+            std::string identifier = (*it_next_word)->_label + "%";
             g_code_symbol_table[identifier] = identifier;
             table& env = analyzer.m_compile_time_env_table[analyzer.m_current_env_id];
             env.put_value(identifier.c_str(), value(g_code_symbol_table[identifier].c_str()));
@@ -309,7 +309,8 @@ namespace interpretor {
     bool lexical_analyzer::parser(word expression) {
         bool is_ok;
         auto it_word = expression._expression.begin();
-        for (; it_word != expression._expression.end(); ) {
+
+        for (; it_word != expression._expression.end(); it_word++) {
             (*(*it_word))._pre_word = &expression;
             (*(*it_word))._compile_time_env_id = m_current_env_id;
 
@@ -341,13 +342,21 @@ namespace interpretor {
 
     bool lexical_analyzer::do_analysis() {
         finite_state();
-
+        if (m_error_flag) {
+            return false;
+        }
         m_compile_time_env_table.clear();
         m_compile_time_env_table.push_back(table());
         m_current_env_id = m_compile_time_env_table.size() - 1;
-        m_expression_tree._compile_time_env_id = m_current_env_id;
-        m_error_flag = parser(m_expression_tree);
-
-        return m_error_flag;
+        m_lexical_tree._compile_time_env_id = m_current_env_id;
+        bool is_ok = parser(m_lexical_tree);
+        if (!is_ok) {
+            m_error_flag = true;
+            return false;
+        }
+        return true;
+    }
+    auto lexical_analyzer::get_lexical_tree() -> lexical_analyzer::word& {
+        return m_lexical_tree;
     }
 }

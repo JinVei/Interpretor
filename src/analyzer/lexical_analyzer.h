@@ -46,7 +46,7 @@ namespace interpretor {
         unsigned int                m_text_length   = 0;
         unsigned int                m_text_index    = 0;
         std::function<void()>       m_error_handler;
-        word                        m_expression_tree;
+        word                        m_lexical_tree;
 
         void finite_state();
         auto expression_state() -> std::shared_ptr<word>;
@@ -63,6 +63,7 @@ namespace interpretor {
 
         lexical_analyzer(const char* text, unsigned int text_len);
         bool do_analysis();
+        word& get_lexical_tree();
     };
 
     extern std::map<std::string, std::string> g_code_symbol_table;
