@@ -70,7 +70,16 @@ namespace interpretor {
         { operator_type::TABLE_PUT,
           operator_item{ operator_type::TABLE_PUT,         "table_put",    primative_operator::table_put,
                         "table_put [table] [key_name] [value1]\n"
-                        "Put a key-value pair into table"}
+                        "Put a key-value pair into table\n"}
+        },
+        { operator_type::LOG,
+          operator_item{ operator_type::LOG,                "log",    primative_operator::log,
+                        "log [message]\n"
+                        "print message\n"}
+        },
+        { operator_type::SHUT_DOWN,
+          operator_item{ operator_type::SHUT_DOWN,          "shut_down",    primative_operator::shut_down,
+                        "shut_down\n"}
         },
     };
 }

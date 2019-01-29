@@ -34,6 +34,8 @@ namespace interpretor {
         TABLE,
         TABLE_GET,
         TABLE_PUT,
+        LOG,
+        SHUT_DOWN
     };
 
     extern std::unordered_map<operator_type, operator_item> operator_registry;

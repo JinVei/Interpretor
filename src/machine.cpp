@@ -53,6 +53,9 @@ namespace interpretor {
             execute_instruction(m_repertoire[(unsigned int)pc.number()]);
         }
     }
+    void machine::shut_down() {
+        m_run_flag = 0;
+    }
     void machine::execute_instruction(instruction instruction) {
         std::list<value> operator_param;
         operand operand_val;
@@ -131,7 +134,7 @@ namespace interpretor {
         pc.m_number = new_pc;
     }
 
-    void machine::print(char* log) {
+    void machine::print(const char* log) {
         if (m_printer != nullptr) {
             char time[64]; 
             GetTime(time, 64);

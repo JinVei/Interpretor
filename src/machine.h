@@ -37,9 +37,10 @@ namespace interpretor{
         machine();
         machine(logger* printer);
         void run();
+        void shut_down();
         void execute_instruction(instruction instruction);
         void increase_pc();
-        void print(char* message);
+        void print(const char* message);
         void garbage_collection();
         value new_gc_object(gc_object_type type);
 

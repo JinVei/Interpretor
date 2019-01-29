@@ -18,6 +18,8 @@ namespace interpretor{
         static void new_table(machine& machine, std::list<value>& operands);
         static void table_get(machine& machine, std::list<value>& operands);
         static void table_put(machine& machine, std::list<value>& operands);
+        static void log(machine& machine, std::list<value>& operands);
+        static void shut_down(machine& machine, std::list<value>& operands);
     };
 }
 #endif

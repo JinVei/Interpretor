@@ -2,7 +2,7 @@
 #include "plog.h"
 
 namespace interpretor {
-    std::map<std::string, std::string> g_identifier;
+    std::map<std::string, std::string> g_code_symbol_table;
 
     lexical_analyzer::word::word(word_expression expression) {
         _type = type::expreesion;
@@ -269,7 +269,7 @@ namespace interpretor {
 
     static void dispose_label_suffix(lexical_analyzer::word& word) {
         word._label.push_back('%');
-        g_identifier[word._label] = word._label;
+        g_code_symbol_table[word._label] = word._label;
     }
 
     static void dispose_lambda_label(lexical_analyzer& analyzer, lexical_analyzer::word& word) {
@@ -299,9 +299,9 @@ namespace interpretor {
                 return false;
             }
             std::string identifier = (*it_next_word)->_label;
-            g_identifier[identifier] = identifier;
+            g_code_symbol_table[identifier] = identifier;
             table& env = analyzer.m_compile_time_env_table[analyzer.m_current_env_id];
-            env.put_value(identifier.c_str(), value(g_identifier[identifier].c_str()));
+            env.put_value(identifier.c_str(), value(g_code_symbol_table[identifier].c_str()));
         }
         return true;
     }

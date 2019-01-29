@@ -65,6 +65,6 @@ namespace interpretor {
         bool do_analysis();
     };
 
-    extern std::map<std::string, std::string> g_identifier;
+    extern std::map<std::string, std::string> g_code_symbol_table;
 }
 #endif

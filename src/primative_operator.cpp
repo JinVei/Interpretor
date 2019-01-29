@@ -358,4 +358,19 @@ namespace interpretor {
         machine.set_returned_reg(value());
         machine.set_run_error();
     }
+
+    static void log(machine& machine, std::list<value>& operands) {
+        if (operands.size() < 0) {
+            MACHINE_PRINT_LOG(machine, "\n""operands.size() < 0\n");
+            return;
+        }
+        if (operands.front().type() != value_type::STRING) {
+            MACHINE_PRINT_LOG(machine, "\n""operands.front().type != value_type::STRING\n");
+            return;
+        }
+        machine.print(operands.front().string());
+    }
+    static void shut_down(machine& machine, std::list<value>& operands) {
+        machine.shut_down();
+    }
 }
