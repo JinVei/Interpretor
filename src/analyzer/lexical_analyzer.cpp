@@ -43,7 +43,8 @@ namespace interpretor {
             case '(':
                 ++m_text_index;
                 word_ptr = expression_state();
-                m_lexical_tree._expression.push_back(word_ptr);
+                if(word_ptr != nullptr)
+                    m_lexical_tree._expression.push_back(word_ptr);
                 break;
 
             default:
@@ -75,7 +76,8 @@ namespace interpretor {
             case '(':
                 ++m_text_index;
                 tmp_val = expression_state();
-                expression.push_back(tmp_val);
+                if (tmp_val != nullptr)
+                    expression.push_back(tmp_val);
                 break;
 
             case ')':
@@ -85,23 +87,27 @@ namespace interpretor {
             case '\'':
                 ++m_text_index;
                 tmp_val = quote_state();
-                expression.push_back(tmp_val);
+                if (tmp_val != nullptr)
+                    expression.push_back(tmp_val);
                 break;
 
             default:
                 if ('0' <= m_text[m_text_index] && m_text[m_text_index] <= '9') {
                     tmp_val = number_state();
-                    expression.push_back(tmp_val);
+                    if (tmp_val != nullptr)
+                        expression.push_back(tmp_val);
                     break;
 
-                } else if (('a' <= m_text[m_text_index] && m_text[m_text_index] <= 'z')
-                      || ('A' <= m_text[m_text_index] && m_text[m_text_index] <= 'Z'))
-                {
+                } 
+                else if ((0x21 <= m_text[m_text_index] && m_text[m_text_index] <= 0x7e)) {
                     tmp_val = label_state();
-                    expression.push_back(tmp_val);
+                    if (tmp_val != nullptr)
+                        expression.push_back(tmp_val);
                     break;
                 } else {
-                    m_error_message = PLOG_FUNCTION_LOCATION_INFO "\n no matching case ";
+                    std::string ch;
+                    ch.push_back(m_text[m_text_index]);
+                    m_error_message = PLOG_FUNCTION_LOCATION_INFO "\n no matching case: " + ch;
                     goto ErrorExit;
                 }
             }

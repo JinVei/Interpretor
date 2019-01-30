@@ -57,7 +57,7 @@ namespace interpretor {
 
         bool parser(word expression);
     public:
-        const char*         m_error_message = nullptr;
+        std::string         m_error_message;
         std::vector<table>  m_compile_time_env_table;
         unsigned int        m_current_env_id;
 

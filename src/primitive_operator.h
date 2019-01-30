@@ -1,9 +1,9 @@
-#ifndef __PRIMATIVE_OPERATOR_H
-#define __PRIMATIVE_OPERATOR_H
+#ifndef __primitive_OPERATOR_H
+#define __primitive_OPERATOR_H
 #include "machine.h"
 
 namespace interpretor{
-    struct primative_operator {
+    struct primitive_operator {
         static void empty_operation(machine& machine, std::list<value>& operands);
         static void addtion(machine& machine, std::list<value>& operands);
         static void subtraction(machine& machine, std::list<value>& operands);

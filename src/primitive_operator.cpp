@@ -1,14 +1,14 @@
 #include "plog.h"
-#include "primative_operator.h"
+#include "primitive_operator.h"
 #include "garbage_collector.h"
 #include "table_type.h"
 
 #include <array>
 namespace interpretor {
-    void primative_operator::empty_operation(machine& machine, std::list<value>& operands) {
+    void primitive_operator::empty_operation(machine& machine, std::list<value>& operands) {
         machine.increase_pc();
     }
-    void primative_operator::addtion(machine& machine, std::list<value>& operands) {
+    void primitive_operator::addtion(machine& machine, std::list<value>& operands) {
         value operand1;
         value operand2;
         double number;
@@ -38,7 +38,7 @@ namespace interpretor {
         machine.set_run_error();
     }
 
-    void primative_operator::subtraction(machine & machine, std::list<value>& operands) {
+    void primitive_operator::subtraction(machine & machine, std::list<value>& operands) {
         value operand1;
         value operand2;
         double number;
@@ -68,7 +68,7 @@ namespace interpretor {
         machine.set_run_error();
     }
 
-    void primative_operator::multiplication(machine & machine, std::list<value>& operands) {
+    void primitive_operator::multiplication(machine & machine, std::list<value>& operands) {
         value operand1;
         value operand2;
         double number;
@@ -98,7 +98,7 @@ namespace interpretor {
         machine.set_run_error();
     }
 
-    void primative_operator::division(machine & machine, std::list<value>& operands) {
+    void primitive_operator::division(machine & machine, std::list<value>& operands) {
         value operand1;
         value operand2;
         double number;
@@ -132,7 +132,7 @@ namespace interpretor {
         machine.set_run_error();
     }
 
-    void primative_operator::jump(machine & machine, std::list<value>& operands) {
+    void primitive_operator::jump(machine & machine, std::list<value>& operands) {
         value operand1;
 
         if (operands.size() < 1) {
@@ -154,7 +154,7 @@ namespace interpretor {
         machine.set_run_error();
     }
 
-    void primative_operator::push(machine & machine, std::list<value>& operands) {
+    void primitive_operator::push(machine & machine, std::list<value>& operands) {
         value operand1;
 
         if (operands.size() < 1) {
@@ -172,13 +172,13 @@ namespace interpretor {
         machine.set_run_error();
     }
 
-    void primative_operator::pop(machine & machine, std::list<value>& operands) {
+    void primitive_operator::pop(machine & machine, std::list<value>& operands) {
         value ret_val = machine.stack_pop();
         machine.set_returned_reg(ret_val);
         machine.increase_pc();
     }
 
-    void primative_operator::compare(machine & machine, std::list<value>& operands) {
+    void primitive_operator::compare(machine & machine, std::list<value>& operands) {
         value operand1;
         value operand2;
 
@@ -201,7 +201,7 @@ namespace interpretor {
         machine.set_run_error();
     }
 
-    void primative_operator::branch(machine & machine, std::list<value>& operands) {
+    void primitive_operator::branch(machine & machine, std::list<value>& operands) {
         value operand1;
 
         if (operands.size() < 1) {
@@ -226,7 +226,7 @@ namespace interpretor {
         machine.set_run_error();
     }
 
-    void primative_operator::move(machine & machine, std::list<value>& operands) {
+    void primitive_operator::move(machine & machine, std::list<value>& operands) {
         value operand1;
         value operand2;
         if (operands.size() < 2) {
@@ -248,7 +248,7 @@ namespace interpretor {
         machine.set_run_error();
     }
 
-    void primative_operator::new_table(machine & machine, std::list<value>& operands) {
+    void primitive_operator::new_table(machine & machine, std::list<value>& operands) {
         value val = machine.new_gc_object(gc_object_type::TABLE);
         table* table_val = dynamic_cast<table*>(val.m_gc_object);
         value key_name;
@@ -278,7 +278,7 @@ namespace interpretor {
         machine.set_run_error();
     }
 
-    void primative_operator::table_get(machine & machine, std::list<value>& operands){
+    void primitive_operator::table_get(machine & machine, std::list<value>& operands){
         value table_val;
         value key_name;
         value ret_val;
@@ -318,7 +318,7 @@ namespace interpretor {
         machine.set_run_error();
     }
 
-    void primative_operator::table_put(machine & machine, std::list<value>& operands) {
+    void primitive_operator::table_put(machine & machine, std::list<value>& operands) {
         value table_val;
         value key_name;
         value put_val;
@@ -359,18 +359,25 @@ namespace interpretor {
         machine.set_run_error();
     }
 
-    void primative_operator::log(machine& machine, std::list<value>& operands) {
+    void primitive_operator::log(machine& machine, std::list<value>& operands) {
         if (operands.size() < 0) {
             MACHINE_PRINT_LOG(machine, "\n""operands.size() < 0\n");
             return;
         }
-        if (operands.front().type() != value_type::STRING) {
-            MACHINE_PRINT_LOG(machine, "\n""operands.front().type != value_type::STRING\n");
+
+        if (operands.front().type() == value_type::STRING) {
+            machine.print(operands.front().string());
+        }
+        else if (operands.front().type() == value_type::NUMBER) {
+            machine.print(std::to_string(operands.front().number()).c_str());
+        }
+        else {
+            MACHINE_PRINT_LOG(machine, "\n"" operands.front().type != value_type::STRING && operands.front().type() == value_type::NUMBER\n");
             return;
         }
-        machine.print(operands.front().string());
+        machine.increase_pc();
     }
-    void primative_operator::shut_down(machine& machine, std::list<value>& operands) {
+    void primitive_operator::shut_down(machine& machine, std::list<value>& operands) {
         machine.shut_down();
     }
 }

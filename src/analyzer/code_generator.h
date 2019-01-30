@@ -24,10 +24,50 @@ namespace interpretor {
             std::vector<instruction>& target_instruction
         );
         int find_identifier(const char* label, unsigned int current_env_id);
-        void define_compile();
     };
+
     using code_generator_handle = std::function<bool(code_generator& generator,
         lexical_analyzer::word_expression& expression,
         std::vector<instruction>& target_instruction)>;
+
+    bool lambda_compile(
+        code_generator& code_generator,
+        lexical_analyzer::word_expression& lambda_expression,
+        std::vector<instruction>& target_instruction);
+
+    bool define_compile(
+        code_generator& code_generator,
+        lexical_analyzer::word_expression& lambda_expression,
+        std::vector<instruction>& target_instruction);
+
+    bool log_compile(
+        code_generator& code_generator,
+        lexical_analyzer::word_expression& expression,
+        std::vector<instruction>& target_instruction);
+
+    bool addtion_compile(
+        code_generator& code_generator,
+        lexical_analyzer::word_expression& expression,
+        std::vector<instruction>& target_instruction);
+
+    bool subtraction_compile(
+        code_generator& code_generator,
+        lexical_analyzer::word_expression& expression,
+        std::vector<instruction>& target_instruction);
+
+    bool multiplication_compile(
+        code_generator& code_generator,
+        lexical_analyzer::word_expression& expression,
+        std::vector<instruction>& target_instruction);
+
+    bool division_compile(
+        code_generator& code_generator,
+        lexical_analyzer::word_expression& expression,
+        std::vector<instruction>& target_instruction);
+
+    bool assign_compile(
+        code_generator& code_generator,
+        lexical_analyzer::word_expression& expression,
+        std::vector<instruction>& target_instruction);
 }
 #endif

@@ -22,6 +22,8 @@ namespace interpretor{
         env1,
         eax,
         R0,
+        R1,
+        R2,
     };
     extern value register_to_value(register_t reg);
     extern register_t value_to_register(value val);
