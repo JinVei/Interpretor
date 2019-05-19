@@ -6,7 +6,7 @@ namespace interpretor {
     //Arg[0~9] which be pushed in stack frame(ebp), will be used to deposits the value of parameters
 
     //primitive_label_compiler
-    std::unordered_map<std::string, code_generator_handle> primitive_label_compiler = {
+    std::unordered_map<std::string, code_generator_handle> primitive_label_compiler_registry = {
         { "lambda%", lambda_compile },
         { "define%", define_compile },
         { "+%",      addtion_compile },

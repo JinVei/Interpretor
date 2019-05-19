@@ -206,8 +206,8 @@ namespace interpretor {
         auto operation = *it_word;
         if (operation->_type == lexical_analyzer::word::type::label) {
             label = operation->_label;
-            if (primitive_label_compiler.find(label) != primitive_label_compiler.end()) {
-                bool is_ok = primitive_label_compiler[label](*this, expression_tree, target_instruction);//param
+            if (primitive_label_compiler_registry.find(label) != primitive_label_compiler_registry.end()) {
+                bool is_ok = primitive_label_compiler_registry[label](*this, expression_tree, target_instruction);//param
                 if (!is_ok)
                     return false;
 

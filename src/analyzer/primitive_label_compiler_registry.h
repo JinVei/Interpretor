@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 namespace interpretor {
-    extern std::unordered_map<std::string, code_generator_handle> primitive_label_compiler;
+    extern std::unordered_map<std::string, code_generator_handle> primitive_label_compiler_registry;
 }
 
 #endif
