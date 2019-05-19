@@ -10,22 +10,22 @@ namespace interpretor {
         { operator_type::ADDITION,
           operator_item{ operator_type::ADDITION,          "add",          primitive_operator::addtion,
                         "add [number1] [number2]\n"
-                        "The resunlt will be stored in ret_reg\n"}
+                        "The result will be stored in ret_reg\n"}
         },
         { operator_type::SUBTRACTION,
           operator_item{ operator_type::SUBTRACTION,       "sub",          primitive_operator::subtraction,
                         "sub [number1] [number2]\n"
-                        "The resunlt will be stored in ret_reg\n" }
+                        "The result will be stored in ret_reg\n" }
         },
         { operator_type::MULTIPLICATION,
           operator_item{ operator_type::MULTIPLICATION,    "mul",          primitive_operator::multiplication,
                         "MUL [number1] [number2]\n"
-                        "The resunlt will be stored in ret_reg\n" }
+                        "The result will be stored in ret_reg\n" }
         },
         { operator_type::DIVISION,
           operator_item{ operator_type::DIVISION,          "div",          primitive_operator::division,
                         "div [number1] [number2]\n"
-                        "The resunlt will be stored in ret_reg\n" }
+                        "The result will be stored in ret_reg\n" }
         },
         { operator_type::JUMP,
           operator_item{ operator_type::JUMP,              "jmp",          primitive_operator::jump,

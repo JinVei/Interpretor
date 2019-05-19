@@ -3,8 +3,8 @@
 #include "instruction.h"
 #include "lexical_analyzer.h"
 
-#include <unordered_map>
 #include <functional>
+
 namespace interpretor {
     //extern std::unordered_map<std::string, code_generator_handle> label_recognazation_table;
 
@@ -27,47 +27,20 @@ namespace interpretor {
     };
 
     using code_generator_handle = std::function<bool(code_generator& generator,
-        lexical_analyzer::word_expression& expression,
-        std::vector<instruction>& target_instruction)>;
+                                                    lexical_analyzer::word_expression& expression,
+                                                    std::vector<instruction>& target_instruction)>;
 
-    bool lambda_compile(
-        code_generator& code_generator,
-        lexical_analyzer::word_expression& lambda_expression,
-        std::vector<instruction>& target_instruction);
+    const char*  get_constant_string(std::string str);
 
-    bool define_compile(
-        code_generator& code_generator,
-        lexical_analyzer::word_expression& lambda_expression,
-        std::vector<instruction>& target_instruction);
+#define SYMBOL_RETURN_ADDRESS   get_constant_string("return_address")
+#define SYMBOL_START_ADDRESS    get_constant_string("start_address")
+#define SYMBOL_ARG(number)      get_constant_string("arg" + std::to_string(number))
+#define SYMBOL_ARG_LEN          get_constant_string("arg_len")
+#define SYMBOL_PRE_ENV          get_constant_string("pre_env")
+#define SYMBOL_CALLER_ENV       get_constant_string("caller_env")
+#define SYMBOL_TARGET_ENV       get_constant_string("target_env")
 
-    bool log_compile(
-        code_generator& code_generator,
-        lexical_analyzer::word_expression& expression,
-        std::vector<instruction>& target_instruction);
+    void find_identifier_instruction(std::string& label, int deep, std::vector<instruction>& target_instruction);
 
-    bool addtion_compile(
-        code_generator& code_generator,
-        lexical_analyzer::word_expression& expression,
-        std::vector<instruction>& target_instruction);
-
-    bool subtraction_compile(
-        code_generator& code_generator,
-        lexical_analyzer::word_expression& expression,
-        std::vector<instruction>& target_instruction);
-
-    bool multiplication_compile(
-        code_generator& code_generator,
-        lexical_analyzer::word_expression& expression,
-        std::vector<instruction>& target_instruction);
-
-    bool division_compile(
-        code_generator& code_generator,
-        lexical_analyzer::word_expression& expression,
-        std::vector<instruction>& target_instruction);
-
-    bool assign_compile(
-        code_generator& code_generator,
-        lexical_analyzer::word_expression& expression,
-        std::vector<instruction>& target_instruction);
 }
 #endif
