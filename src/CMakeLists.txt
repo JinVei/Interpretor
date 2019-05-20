@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0) 
 
-file(GLOB M_SRC  ./*.cpp)
-file(GLOB M_HDR ./*.h)
+file(GLOB M_SRC  ./machine/*.cpp)
+file(GLOB M_HDR ./machine/*.h)
 
 source_group("machine_source" FILES ${M_SRC})
 source_group("machine_header" FILES ${M_HDR})

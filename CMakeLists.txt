@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.0)
 project(SchemeInterpretor)
 set(M_LIB_SRC_DIR ./src)
 
-include_directories(./src/)
+include_directories(./src/machine)
 include_directories(./src/analyzer)
 
 add_subdirectory(./src/)
