@@ -10,8 +10,6 @@ namespace interpretor{
         immediate_operand = 0,
         stack_operand,
         register_operand,//0->pc_reg, 1->ret_reg, 2->ebp_reg
-        register_address_operand,
-        stack_index_operand,
     };
     using register_size = uint8_t;
     enum class register_t : register_size {

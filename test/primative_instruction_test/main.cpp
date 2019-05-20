@@ -98,7 +98,7 @@ std::vector<instruction> repertoire = {
     },
     { operator_type::MOV,
       std::list<operand>{
-                           { operand_type::stack_index_operand,
+                           { operand_type::stack_operand,
                              value(2),
                              register_to_value(register_t::ebp)
                            },

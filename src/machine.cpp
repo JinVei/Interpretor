@@ -67,24 +67,8 @@ namespace interpretor {
         switch (operand_val._operand_type) {
         case operand_type::immediate_operand:
         {
-            value offset = operand_val._offset;
-            
-            value reg_val;
-            if (operand_val._offset.type() == value_type::NUMBER) {
-                auto find_it = m_registers_index.find(value_to_register(offset));
-                if (find_it == m_registers_index.end())
-                    offset = value(0.0);
-                else {
-                    value index = find_it->second;
-                    reg_val = stack_index(index);
-                }
-            }
-            if (reg_val == value())
-                return std::move(operand_val._val);
-            else
-                return std::move(operand_val._val + reg_val);
+            return std::move(operand_val._val);         
         }
-        case operand_type::stack_index_operand:
         case operand_type::stack_operand:
         {
             value offset = operand_val._offset;
@@ -105,14 +89,17 @@ namespace interpretor {
 
             return stack_index(operand_val._val + reg_val);
         }
-        case operand_type::register_address_operand:
         case operand_type::register_operand:
         {
             auto reg_index_it = m_registers_index.find(value_to_register(operand_val._val));
             if (reg_index_it != m_registers_index.end()) {
                 value& index = reg_index_it->second;
-
-                return stack_index(index);
+                if(operand_val._offset == value())
+                    return stack_index(index);
+                else {
+                    value ret_val = operand_val._offset + stack_index(index);
+                    return std::move(ret_val);
+                }
 
             }
             else {

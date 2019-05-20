@@ -228,20 +228,16 @@ namespace interpretor {
     }
 
     void primitive_operator::move(machine & machine, operand_list operands) {
-        //value operand1;
-        //value operand2;
+        value operand2;
+
         if (operands.size() < 2) {
             MACHINE_PRINT_LOG(machine, "\n""the number of operands must not less than 2");
             goto Error1;
         }
         value& operand1 = machine.check_oprand(operands.front(), 0);
         operands.pop_front();
-        value& operand2 = machine.check_oprand(operands.front(), 0);
-        //if (operand1.type() != value_type::NUMBER) {
-        //    MACHINE_PRINT_LOG(machine, "\n""if (operand1.type() != value_type::NUMBER)");
-        //    goto Error1;
-        //}
-        //machine.stack_index(operand1) = operand2;
+        operand2 = machine.check_oprand(operands.front(), 0);
+
         operand1 = operand2;
 
         machine.increase_pc();;

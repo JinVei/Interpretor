@@ -61,7 +61,7 @@ namespace interpretor {
 
         target_instruction.push_back({
             operator_type::MOV,
-            operand_list{ { operand_type::register_address_operand, register_to_value(register_t::R0) },
+            operand_list{ { operand_type::register_operand, register_to_value(register_t::R0) },
             { operand_type::immediate_operand, value() }
         } });
         return true;
@@ -95,7 +95,7 @@ namespace interpretor {
         } });
         lambda_proc_instruction.push_back({
             operator_type::BRANCH,
-            operand_list{ { operand_type::immediate_operand, value(3), register_to_value(register_t::pc) },
+            operand_list{ { operand_type::register_operand, register_to_value(register_t::pc), value(3) },
         } });
         lambda_proc_instruction.push_back({
             operator_type::LOG,
@@ -160,7 +160,7 @@ namespace interpretor {
         });
         target_instruction.push_back({
             operator_type::MOV,
-            operand_list{ { operand_type::register_address_operand, register_to_value(register_t::R0) },
+            operand_list{ { operand_type::register_operand, register_to_value(register_t::R0) },
             { operand_type::register_operand, register_to_value(register_t::ret) }
         } });
         target_instruction.push_back({
@@ -173,14 +173,14 @@ namespace interpretor {
             operator_type::TABLE_PUT,
             operand_list{ { operand_type::register_operand, register_to_value(register_t::R0) },
             { operand_type::immediate_operand, value(SYMBOL_START_ADDRESS) },
-            { operand_type::immediate_operand, value(2), register_to_value(register_t::pc) }
+            { operand_type::register_operand, register_to_value(register_t::pc), value(2) }
         } });
         std::vector<instruction> lambda_proc_instruction;
         lambda_body_compile(code_generator, lambda_expression, lambda_proc_instruction);
         //lambda expreesion return
         target_instruction.push_back({
             operator_type::JUMP,
-            operand_list{ { operand_type::immediate_operand, value(lambda_proc_instruction.size() + 1), register_to_value(register_t::pc) },
+            operand_list{ { operand_type::register_operand, register_to_value(register_t::pc), value(lambda_proc_instruction.size() + 1) },
         } });
         //lambda proc entry
         target_instruction.insert(target_instruction.end(),
@@ -328,7 +328,7 @@ namespace interpretor {
 
         target_instruction.push_back({
             operator_type::MOV,
-            operand_list{ { operand_type::register_address_operand, register_to_value(register_t::eax) },
+            operand_list{ { operand_type::register_operand, register_to_value(register_t::eax) },
             { operand_type::register_operand, register_to_value(register_t::ret) }
         } });
         target_instruction.push_back({
@@ -344,7 +344,7 @@ namespace interpretor {
 
         target_instruction.push_back({
             operator_type::MOV,
-            operand_list{ { operand_type::register_address_operand, register_to_value(register_t::R0) },
+            operand_list{ { operand_type::register_operand, register_to_value(register_t::R0) },
             { operand_type::register_operand, register_to_value(register_t::ret) }
         } });
         return true;

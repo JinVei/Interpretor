@@ -15,12 +15,12 @@ namespace interpretor {
     static void find_env_instruction(std::string& label, int deep, std::vector<instruction>& target_instruction) {
         target_instruction.push_back({
             operator_type::MOV,
-            operand_list{ { operand_type::register_address_operand, register_to_value(register_t::env1) },
+            operand_list{ { operand_type::register_operand, register_to_value(register_t::env1) },
             { operand_type::register_operand, register_to_value(register_t::env0) }
         } });
         target_instruction.push_back({
             operator_type::MOV,
-            operand_list{ { operand_type::register_address_operand, register_to_value(register_t::eax) },
+            operand_list{ { operand_type::register_operand, register_to_value(register_t::eax) },
             { operand_type::immediate_operand, value(deep) }
         } });
         target_instruction.push_back({
@@ -30,7 +30,7 @@ namespace interpretor {
         } });
         target_instruction.push_back({
             operator_type::BRANCH,
-            operand_list{ { operand_type::immediate_operand, value(6), register_to_value(register_t::pc) }
+            operand_list{ { operand_type::register_operand, register_to_value(register_t::pc), value(6) }
         } });
         target_instruction.push_back({
             operator_type::TABLE_GET,
@@ -39,7 +39,7 @@ namespace interpretor {
         } });
         target_instruction.push_back({
             operator_type::MOV,
-            operand_list{ { operand_type::register_address_operand, register_to_value(register_t::env1) },
+            operand_list{ { operand_type::register_operand, register_to_value(register_t::env1) },
             { operand_type::register_operand, register_to_value(register_t::ret) }
         } });
         target_instruction.push_back({
@@ -49,12 +49,12 @@ namespace interpretor {
         } });
         target_instruction.push_back({
             operator_type::MOV,
-            operand_list{ { operand_type::register_address_operand, register_to_value(register_t::eax) },
+            operand_list{ { operand_type::register_operand, register_to_value(register_t::eax) },
             { operand_type::register_operand, register_to_value(register_t::ret) }
         } });
         target_instruction.push_back({
             operator_type::JUMP,
-            operand_list{ { operand_type::immediate_operand, value(-6), register_to_value(register_t::pc) }
+            operand_list{ { operand_type::register_operand, register_to_value(register_t::pc), value(-6) }
         } });
         // env will be deposited in register env1
     }
@@ -85,7 +85,7 @@ namespace interpretor {
         } });
         target_instruction.push_back({
             operator_type::MOV,
-            operand_list{ { operand_type::register_address_operand, register_to_value(register_t::ebp) },
+            operand_list{ { operand_type::register_operand, register_to_value(register_t::ebp) },
             { operand_type::register_operand, register_to_value(register_t::ret) }
         } });
     }
@@ -102,7 +102,7 @@ namespace interpretor {
         } });
         target_instruction.push_back({
             operator_type::MOV,
-            operand_list{ { operand_type::register_address_operand, register_to_value(register_t::ebp) },
+            operand_list{ { operand_type::register_operand, register_to_value(register_t::ebp) },
             { operand_type::register_operand, register_to_value(register_t::ret) }
         } });
     }
@@ -121,14 +121,14 @@ namespace interpretor {
         } });
         target_instruction.push_back({
             operator_type::MOV,
-            operand_list{ { operand_type::register_address_operand, register_to_value(register_t::env0) },
+            operand_list{ { operand_type::register_operand, register_to_value(register_t::env0) },
             { operand_type::register_operand, register_to_value(register_t::ret) }
         } });
         target_instruction.push_back({
             operator_type::TABLE_PUT,
             operand_list{ { operand_type::stack_operand, value(0.0), register_to_value(register_t::ebp) },
             { operand_type::immediate_operand, value(SYMBOL_RETURN_ADDRESS) },
-            { operand_type::immediate_operand, value(3), register_to_value(register_t::pc) }
+            { operand_type::register_operand, register_to_value(register_t::pc), value(3) }
         } });
         target_instruction.push_back({
             operator_type::TABLE_GET,
@@ -147,7 +147,7 @@ namespace interpretor {
         } });
         target_instruction.push_back({
             operator_type::MOV,
-            operand_list{ { operand_type::register_address_operand, register_to_value(register_t::env0) },
+            operand_list{ { operand_type::register_operand, register_to_value(register_t::env0) },
             { operand_type::register_operand, register_to_value(register_t::ret) }
         } });
     }
@@ -162,7 +162,7 @@ namespace interpretor {
         });
         target_instruction.push_back({
             operator_type::MOV,
-            operand_list{ { operand_type::register_address_operand, register_to_value(register_t::env0) },
+            operand_list{ { operand_type::register_operand, register_to_value(register_t::env0) },
                           { operand_type::register_operand, register_to_value(register_t::ret) }
         } });
         target_instruction.push_back({
@@ -195,7 +195,7 @@ namespace interpretor {
         if (it_word == expression_tree.end()) {
             target_instruction.push_back({
                 operator_type::MOV,
-                operand_list{ { operand_type::register_address_operand, register_to_value(register_t::ret) },
+                operand_list{ { operand_type::register_operand, register_to_value(register_t::ret) },
                               { operand_type::immediate_operand, value() }
             } });
             return true;
