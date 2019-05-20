@@ -84,6 +84,46 @@ namespace interpretor {
         }
         return ret;
     }
+    value& value::operator=(value& val) {
+        switch (val.type()) {
+        case value_type::NUMBER:
+            this->m_value_type = value_type::NUMBER;
+            this->m_number = val.number();
+            break;
+
+        case value_type::GC_OBJECT:
+            this->m_value_type = value_type::GC_OBJECT;
+            this->m_gc_object = val.gc_object();
+            break;
+
+        case value_type::STRING:
+            this->m_value_type = value_type::STRING;
+            this->m_string = val.string();
+            break;
+
+        case value_type::NIL:
+        default:
+            this->m_value_type = value_type::NIL;
+            this->m_string = nullptr;
+
+        }
+        return *this;
+    }
+    value& value::operator=(double val) {
+        this->m_value_type = value_type::NUMBER;
+        this->m_number = val;
+        return *this;
+    }
+    value& value::operator=(const char* val) {
+        this->m_value_type = value_type::STRING;
+        this->m_string = val;
+        return *this;
+    }
+    value& value::operator=(class gc_object* val) {
+        this->m_value_type = value_type::GC_OBJECT;
+        this->m_gc_object = val;
+        return *this;
+    }
 
     double value::number() {
         return m_number;

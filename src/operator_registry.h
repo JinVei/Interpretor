@@ -8,7 +8,9 @@
 namespace interpretor {
     class value;
     class machine;
-    using operator_handle = std::function<void(machine&, std::list<value>& )>;
+    struct operand;
+
+    using operator_handle = std::function<void(machine&, std::list<operand> )>;
     using operator_type_size = uint16_t;
     enum class operator_type : operator_type_size;
 

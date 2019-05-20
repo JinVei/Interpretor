@@ -28,6 +28,11 @@ namespace interpretor{
         value operator+(value&);
         value operator-(value&);
         bool operator==(value&);
+        value& operator=(value&);
+        value& operator=(double);
+        value& operator=(const char*);
+        value& operator=(gc_object*);
+
         double number();
         const char* string();
         gc_object* gc_object();

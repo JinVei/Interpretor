@@ -1,5 +1,7 @@
 #include "plog.h"
 #include "machine.h"
+#include "operator_registry.h"
+
 #include <ctime>
 #include <thread>
 
@@ -57,71 +59,75 @@ namespace interpretor {
         m_run_flag = 0;
     }
     void machine::execute_instruction(instruction instruction) {
-        std::list<value> operator_param;
-        operand operand_val;
-        while (instruction._operands_list.size() > 0) {
-            operand_val = instruction._operands_list.front();
-            value stack_val;
+        operator_registry[instruction._operator_type]._operator_handler(*this, instruction._operands_list);
+    }
+
+    value& machine::check_oprand(operand& operand_val, unsigned int mask) {
+
+        switch (operand_val._operand_type) {
+        case operand_type::immediate_operand:
+        {
             value offset = operand_val._offset;
-
-            if ((offset.type() == value_type::NUMBER)
-             && (m_registers_index.find(value_to_register(offset)) != m_registers_index.end())) {
-                value& index = m_registers_index[value_to_register(offset)];
-                offset = stack_index(index);
-            }/* else {
+            
+            value reg_val;
+            if (operand_val._offset.type() == value_type::NUMBER) {
+                auto find_it = m_registers_index.find(value_to_register(offset));
+                if (find_it == m_registers_index.end())
+                    offset = value(0.0);
+                else {
+                    value index = find_it->second;
+                    reg_val = stack_index(index);
+                }
+            }
+            if (reg_val == value())
+                return std::move(operand_val._val);
+            else
+                return std::move(operand_val._val + reg_val);
+        }
+        case operand_type::stack_index_operand:
+        case operand_type::stack_operand:
+        {
+            value offset = operand_val._offset;
+            value index;
+            value reg_val;
+            if (operand_val._offset.type() == value_type::NUMBER) {
+                auto find_it = m_registers_index.find(value_to_register(offset));
+                if (find_it == m_registers_index.end())
+                    offset = value(0.0);
+                else {
+                    index = find_it->second;
+                    reg_val = stack_index(index);
+                }
+            }
+            else {
                 offset = value(0.0);
-            }*/
-
-            switch (operand_val._operand_type) {
-              case operand_type::immediate_operand :
-                  if (offset == value())
-                    operator_param.push_back(operand_val._val);
-                  else
-                      operator_param.push_back(operand_val._val + offset);
-                  break;
-              case operand_type::stack_operand :
-                  if (offset == value())     offset = value(0.0);
-                  stack_val = stack_index(operand_val._val + offset);
-                  operator_param.push_back(stack_val);
-                  break;
-              case operand_type::register_operand:
-                  if (m_registers_index.find(value_to_register(operand_val._val)) != m_registers_index.end()) {
-                      value& index = m_registers_index[value_to_register(operand_val._val)];
-                      stack_val = stack_index(index);
-                      operator_param.push_back(stack_val);
-                  } else {
-                          operator_param.push_back(value());
-                          MACHINE_PRINT_LOG(*this, "\n""operand_type::operand_register_type is unrecognizable");
-                          set_run_error();
-                  }
-                  break;
-              case operand_type::register_address_operand:
-                  if (m_registers_index.find(value_to_register(operand_val._val)) != m_registers_index.end()) {
-                      value& index = m_registers_index[value_to_register(operand_val._val)];
-                      operator_param.push_back(index);
-                  } else {
-                      operator_param.push_back(value());
-                      MACHINE_PRINT_LOG(*this, "\n""operand_type::operand_register_type is unrecognizable");
-                      set_run_error();
-                  }
-                  break;
-              case operand_type::stack_index_operand:
-                  if (operand_val._val.type() != value_type::NUMBER) {
-                      MACHINE_PRINT_LOG(*this, "\n""if (operand_val._val.type() != value_type::NUMBER)");
-                      set_run_error();
-                  }
-                  if (offset == value())     offset = value(0.0);
-                  operator_param.push_back(operand_val._val + offset);
-                  break;
-              default:
-                  MACHINE_PRINT_LOG(*this, "\n""not case to operand_val._operand_type");
-                  set_run_error();
-                  break;
             }
 
-            instruction._operands_list.pop_front();
+            return stack_index(operand_val._val + reg_val);
         }
-        operator_registry[instruction._operator_type]._operator_handler(*this, operator_param);
+        case operand_type::register_address_operand:
+        case operand_type::register_operand:
+        {
+            auto reg_index_it = m_registers_index.find(value_to_register(operand_val._val));
+            if (reg_index_it != m_registers_index.end()) {
+                value& index = reg_index_it->second;
+
+                return stack_index(index);
+
+            }
+            else {
+                MACHINE_PRINT_LOG(*this, "\n""operand_type::operand_register_type is unrecognizable");
+                set_run_error();
+                return m_nil_val;
+
+            }
+        }
+        
+        default:
+            MACHINE_PRINT_LOG(*this, "\n""not case to operand_val._operand_type");
+            set_run_error();
+            return m_nil_val;
+        }
     }
 
     void machine::increase_pc() {
@@ -220,4 +226,5 @@ namespace interpretor {
         }
         return m_stack[(uint_t)index.number()];
     }
+
 }

@@ -58,6 +58,8 @@ namespace interpretor{
         value stack_top();
         value& stack_index(value index);
 
+        value& check_oprand(operand& operand_val, unsigned int mask);
+
         std::string     m_log_message;
     };
 }
